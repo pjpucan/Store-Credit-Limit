@@ -1,0 +1,76 @@
+<!-- snippets/component__dropdown.liquid -->
+{% comment %} 
+  This is a dropdown component that can be used throughout the Shopify theme. It creates a clickable button that opens a dropdown overlay.
+
+  Accepts:
+    - direction: {string} Can be set to 'up' or 'down' to change the direction of the dropdown.
+    - position: {string} Can be set to 'left' or 'right' to change the position of the dropdown.
+    - button_class: {string} A string of classes to add extra styling to the button.
+    - button_label: {string} The text that will be displayed on the button.
+    - content: {Object} A liquid object that contains the content for the dropdown.
+  
+  Usage:
+    {% render 'component__dropdown', 
+      direction: 'down',
+      position: 'right',
+      button_class: 'btn btn--plain btn--small',
+      button_label: dropdown_label, 
+      content: dropdown_content 
+    %}
+
+  Recommendations:
+    - Use this snippet when you need a dropdown menu in your theme. It is highly customizable and can be positioned according to your needs.
+{% endcomment %}
+
+<div 
+  class="relative inline-block"
+  x-data="{ dropdown: false }">
+
+  {% comment %} Button {% endcomment %}
+  <div 
+    class="inline-flex text-left">
+    <button 
+      class="{{ button_class }}"
+      type="button" 
+      @click="dropdown = ! dropdown">
+      {{ button_label }}
+    </button>
+  </div>
+
+  {% comment %} Dropdown {% endcomment %}
+  <div 
+    class="z-10 absolute min-w-[300px] max-w-lg overflow-hidden shadow-md border--radius border--width color__border-divider-1 color__bg-body
+    {% if position contains 'left' %}
+      left-0 origin-left
+    {% endif %}
+    {% if position contains 'right' %}
+      right-0 origin-right
+    {% endif %}
+    {% if direction contains 'down' %}
+      origin-top
+      top-14
+    {% endif %}
+    {% if direction contains 'up' %}
+      origin-bottom
+      bottom-14
+    {% endif %}" 
+    tabindex="-1"
+    @click.outside="dropdown = false"
+    @keyup.escape.window="dropdown = false;"
+    x-show="dropdown"
+    {% if settings.enable_animations %}
+      x-transition:enter="animation-100"
+      x-transition:enter-start="opacity-0 translate-y-8"
+      x-transition:enter-end="opacity-100"
+      x-transition:leave="animation-100"
+      x-transition:leave-start="opacity-100"
+      x-transition:leave-end="opacity-0 translate-y-8"
+    {% endif %}
+    x-cloak>
+    <div 
+      class="max-h-[50vh] overflow-y-auto">
+      {{ content }}
+    </div>
+  </div>
+  
+</div>

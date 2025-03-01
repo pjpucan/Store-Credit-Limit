@@ -1,0 +1,51 @@
+{% comment %}
+	GEMPAGES BUILDER (https://apps.shopify.com/gempages)
+
+	You SHOULD NOT modify source code in this file because
+	It is automatically generated from GEMPAGES BUILDER
+	Try to edit page with the live editor.
+{% endcomment %}
+<!doctype html>
+<html 
+  class="min-h-[100vh]"
+  lang="{{ request.locale.iso_code }}"
+  x-data="app()"
+  x-init="
+    updateCart(false); 
+    handleSharedCart(); 
+    handleSharedDiscount();
+    initAnimationObserver();
+    initPopstate();
+    header_color = header_overlay_color; 
+    header_border = header_overlay_border;
+  ">
+
+  <head>
+    {% comment %} Meta {% endcomment %}
+    {% render 'theme__meta' %}
+
+    {% comment %} Preload {% endcomment %}
+    {% unless settings.type_header_font.system? and settings.type_body_font.system? %}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {% endunless %}
+
+    {% comment %} Assets {% endcomment %}
+    {% render 'theme__styles' %}
+    {% render 'assets' with 'styles.css', preload_stylesheet: true %}
+    <link rel="stylesheet" href="{{ 'custom.css' | asset_url }}">
+    {{ content_for_header }}
+
+    {% comment %} Structured data {% endcomment %}
+    {% render 'theme__structured-data' %}
+    <!-- Programmer: Darpan | LIVE date: 26 August 2024 -->
+  </head>
+
+
+
+  
+  <body>
+<div class="gem-container">
+	{{ content_for_layout }}
+</div><!-- end .gem-container --></body>
+
+</html>

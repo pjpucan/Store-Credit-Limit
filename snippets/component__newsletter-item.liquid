@@ -1,0 +1,170 @@
+<!-- snippets/component__newsletter-item.liquid -->
+{% comment %} 
+  This file is a component that generates a thumbnail with a newsletter for a product or collection grid.
+  
+  Accepts:
+  - heading: {string} Set content for heading text.
+  - content: {string} Set content for body text.
+  - button_label: {string} Set content for button text.
+  - disclaimer: {string} Set content for disclaimer text.
+  - success: {string} Set content for success message.
+  - image: {Object} Liquid object for image values.
+  - color_scheme: {string} Class string to set color.
+  - color_border: {string} Class string to set border color.
+  - color_text: {string} Class string to set text color.
+  - color_button: {string} Class string to set button color.
+  - enable_gradient: {boolean} Indicates if content should use a gradient.
+  - enable_scroll_motion: {boolean} Indicates if scroll animation should be used.
+  - spacing_top: {integer} Set top padding within block.
+  - spacing_bottom: {integer} Set bottom padding within block.
+  - spacing_minium_height {integer} Set minimum height for block.
+  - enable_padding: {boolean} Indicates if content should use padding.
+  - layout_col_span_desktop: {string} Class string to set column span on desktop.
+  - layout_col_span_mobile: {string} Class string to set column span on mobile.
+  - layout_row_span_desktop: {string} Class string to set row span on desktop.
+  - layout_row_span_mobile: {string} Class string to set row span on mobile.
+  - layout_y_alignment: {string} Class string to set vertical aligment.
+  - layout_x_alignment: {string} Class string to set horizontal aligment (left, center, right).
+  
+  Usage:
+    {% render 'component__newsletter-item',
+      heading: 'Title',
+      content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit sit amet consectetur adipisicing elit.',
+      button_label: 'Subscribe',
+      disclaimer: 'Lorem ipsum dolor sit amet consectetur adipisicing elit sit amet consectetur adipisicing elit.',
+      success: 'Lorem ipsum dolor sit amet consectetur adipisicing elit sit amet consectetur adipisicing elit.',
+      image: page_image,
+      color_scheme: 'color__bg-secondary color__secondary',
+      color_border: 'color__border-selected-1',
+      color_text: 'color__dark',
+      color_button: 'btn--secondary',
+      enable_gradient: false,
+      enable_scroll_motion: block.settings.enable_scroll_motion,
+      spacing_top: '',
+      spacing_bottom: '',
+      spacing_minium_height: '200',
+      enable_padding: true,
+      layout_col_span_desktop: 'col-span-1 md:col-span-1',
+      layout_col_span_mobile: '' ,
+      layout_row_span_desktop: 'row-span-1',
+      layout_row_span_mobile: '',
+      layout_y_alignment: 'justify-end',
+      layout_x_alignment: 'left'
+    %}
+  
+  Recommendations:
+  - Use this snippet to display a newsletter in a product or collection grid. For example, you can encourage customers to subscribe to your newsletter while shopping on a collection page.
+{% endcomment %}
+
+{% liquid 
+  assign enable_scroll_motion = enable_scroll_motion | default: true 
+%}
+
+<div 
+  class="
+    h-full border--radius flex flex-col overflow-clip
+    {{ layout_y_alignment }}
+    {{ layout_col_span_desktop }}
+    {{ layout_col_span_mobile }}
+    {{ layout_row_span_desktop }}
+    {{ layout_row_span_mobile }}
+    {{ color_scheme }}
+    {{ color_border }}
+  "
+  style="
+    padding-top:{{ spacing_top }}px;
+    padding-bottom:{{ spacing_bottom }}px;
+    min-height: {{ spacing_minimum_height }}px;
+  ">
+  
+  {% comment %} Image {% endcomment %}
+  {% unless image == blank %}
+    {% render 'component__image', 
+      image: image,
+      max_width: 1600,
+      background_class: 'color__bg-shade-2',
+      container_class: 'h-full',
+      crop_class: 'object-cover',
+      enable_lazy_load: true,
+      enable_2x: true
+    %}
+  {% endunless %}
+
+  {% comment %} Form {% endcomment %}
+  {% form 'customer', class: "w-full" %}
+    <div 
+      class="
+        flex flex-col h-full gap-2 w-full
+        {% if enable_padding %}
+          p-4
+        {% endif %}
+        {% if layout_x_alignment == 'left' %}
+          items-start text-left
+        {% elsif layout_x_alignment == 'center' %}
+          items-center text-center
+        {% elsif layout_x_alignment == 'right' %}
+          items-end text-right
+        {% elsif layout_x_alignment == 'justify' %}
+          items-start text-justify
+        {% endif %}
+        {% if settings.enable_animations and enable_scroll_motion == true %}
+          motion-safe:scroll-fadein-2-20
+        {% endif %}
+      ">
+      
+      {% unless heading == blank %}
+        <h3 
+          class=" type__heading type__heading-3">
+          {{ heading }}
+        </h3>
+      {% endunless %}
+      
+      {% if form.errors %}
+        <div class="p-2 color__bg-overlay-1 type--small border--radius">
+          {{ form.errors | default_errors }}
+        </div>
+      {% endif %}
+
+      {% if form.posted_successfully? %}
+        <div class="space-y-2 type--small">
+          {{ success }}
+        </div>
+      {% else %}
+        {% unless content == blank %}
+          <div class="space-y-2">
+            {{ content }}
+          </div>
+        {% endunless %}
+        <label 
+          for="{{ section.id }}_customer_email" 
+          class="sr-only">
+          {{ 'labels.email' | t }}
+        </label>
+        <input 
+          id="{{ section.id }}_customer_email" 
+          class="flex-grow form-input"
+          type="email"
+          name="contact[email]"
+          value="{{ form.email }}"
+          placeholder="{{ 'actions.email_placeholder' | t }}"
+          autocorrect="off"
+          autocapitalize="off"/>
+        <button 
+          class="
+            btn btn--small
+            {{ color_button }}
+          "
+          type="submit">
+          {{ button_label }}
+        </button>
+        {% unless disclaimer == blank %}
+          <div class="space-y-4 opacity-75 type--smaller">
+            {{ disclaimer }}
+          </div> 
+        {% endunless %}
+      {% endif %}
+
+    </div>
+  {% endform %}
+
+</div>

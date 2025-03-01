@@ -1,0 +1,51 @@
+<!-- snippets/theme__discount-overlay.liquid -->
+{% comment %} 
+  This file is responsible for creating a overlay overlay that displays discounts to the user.
+  
+  Globals:
+  - close_button_color {string}: The color of the close button on the discount overlay.
+  - close_button_content {string}: The content of the close button on the discount overlay. Can contain 'icon' or 'text'.
+
+  Usage:
+    {% render 'theme__discount-overlay' %}
+  
+  Recommendations:
+  - Use this snippet to display promotional discounts to the user.
+  - Ensure that the discount_text and discount_code are set appropriately.
+  - Enable or disable the discount overlay using the 'discount_overlay' global variable.
+  - For automatic discounts, attach discount values to URL parameters.
+  - Example: .com/discount/13KS94BNGCS8?dt=Save+50%25+storewide
+    - '13KS94BNGCS8' is the discount code.
+    - 'Save+50%25+storewide' is the discount text.
+{% endcomment %}
+
+{% capture alert_content %}
+  <div class="flex flex-wrap items-center justify-between mb-4">
+    <button class="btn
+      {{ settings.close_button_color }}"
+      title="{{ 'actions.close' | t }}"
+      @click="discount_overlay = false">
+      {% if settings.close_button_content contains 'icon' %}
+        {% render 'component__icon', icon: 'x', size: '20' %} 
+      {% endif %}
+      {% if settings.close_button_content contains 'text' %}
+        <span 
+          {% if settings.close_button_content contains 'icon' %}class="ml-1"{% endif %}>
+          {{ 'actions.close' | t }}
+        </span>
+      {% endif %}
+    </button>
+  </div>
+  <div>
+    <p class="mb-0">
+      <span x-text="discount_text"></span>.
+      <strong x-text="discount_code"></strong> {{ 'info.discount_at_checkout' | t }}
+    </p>
+  </div>
+{% endcapture %}
+{% render 'component__alert', 
+  alert_id: 'discount_overlay', 
+  position: 'bottom-left',
+  closeable: true,
+  content: alert_content 
+%}

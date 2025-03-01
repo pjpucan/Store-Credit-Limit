@@ -1,0 +1,43 @@
+<!-- snippets/component__badge.liquid -->
+{% comment %} 
+  Badge to display highlighted text.
+
+  Accepts: 
+  - container_class: {string} Set classes for the container.
+  - background: {string} Set color for the background.
+  - text: {string} Set color for the text.
+  - border: {string} Set color for the border.
+  - icon: {string} Set icon to display from component__icon.liquid.
+  - content: {string} Set content of the badge.
+
+  Usage:
+    {% render 'component__badge', 
+      container_class: 'my-class',
+      background: 'overlay-1',
+      text: 'secondary',
+      border: 'secondary',
+      icon: '',
+      content: taxes_included 
+    %}
+  
+  Possible enhancements:
+  - Add option to show icon in beginning or end.
+
+  Recommendations:
+  - Badges are commonly used to highlight product details like "best sellers"
+  - Use product tags to add badges to product thumbnails. Learn more - https://help.brickspacelab.com/en/articles/263-sitewide-adding-custom-badges-to-product-thumbnails
+{% endcomment %}
+
+<div 
+  class="
+    border__element--radius inline-flex items-center px-2 py-1 border--width gap-2
+    color__bg-{{ background | strip }} 
+    color__{{ text | strip }} 
+    color__border-{{ border | strip }}
+    {{ container_class }}
+  ">
+  {% unless icon == blank %}
+    {% render 'component__icon', icon: icon, size: '14' %} 
+  {% endunless %}
+  <span class="flex items-center type--smaller">{{ content }}</span>
+</div>

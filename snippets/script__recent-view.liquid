@@ -1,0 +1,71 @@
+<!-- snippets/script__recent-view.liquid -->
+{% comment %} 
+  This script is responsible for managing the recently viewed products feature on the Shopify store. 
+  It works by storing the product IDs of the recently viewed products in the local storage of the user's browser.
+  
+  Usage:
+    {% render 'script__recent-view' %}
+
+  Recommendations:
+  - This script is best used in conjunction with a product detail page or any other section where a product is viewed.
+  - The recently viewed products are stored in the local storage of the user's browser. Therefore, it is recommended to consider the user's privacy and data storage limitations when using this script.
+{% endcomment %}
+
+{% if template == 'product' %}
+  <script type="module">
+    document.addEventListener('DOMContentLoaded', () => {
+
+      let productHandle = "{{ product.handle }}"
+
+      {% comment %} check if local storage for viewed products exists, if not create it {% endcomment %}
+      if(localStorage.getItem('recentlyViewedProducts')) {
+        let recentlyViewedProducts = JSON.parse(localStorage.getItem('recentlyViewedProducts'))
+
+        {% comment %} if product is already on the list, don't add it. If it's not, add it {% endcomment %}
+        if(!recentlyViewedProducts.find((prod) => prod.handle === productHandle)) {
+
+          {% comment %} also need to check if the list is longer than max length (12) {% endcomment %}
+          {% comment %} if over limit replace the oldest (first) entry {% endcomment %}
+          if(recentlyViewedProducts.length === 12) {
+            recentlyViewedProducts.pop()
+            let newProduct;
+            fetch(`/products/${productHandle}.js`)
+              .then(response => response.json())
+              .then(data => newProduct = data)
+              .then(() => {
+                let newProducts = [newProduct,...recentlyViewedProducts]
+                localStorage.setItem("recentlyViewedProducts", JSON.stringify(newProducts))
+              })
+              .catch(err => console.log(err)) 
+          } 
+          else {
+            let newProduct;
+            fetch(`/products/${productHandle}.js`)
+              .then(response => response.json())
+              .then(data => newProduct = data)
+              .then(() => {
+                let newProducts = [newProduct,...recentlyViewedProducts]
+                localStorage.setItem("recentlyViewedProducts", JSON.stringify(newProducts))
+              })
+              .catch(err => console.log(err)) 
+          }
+
+        }
+      } 
+
+      {% comment %} Fetch product object by id {% endcomment %}
+      else {
+        let newProduct;
+        fetch(`/products/${productHandle}.js`)
+          .then(response => response.json())
+          .then(data => newProduct = data)
+          .then(() => {
+            let newProducts = [newProduct]
+            localStorage.setItem("recentlyViewedProducts", JSON.stringify(newProducts))
+          })
+          .catch(err => console.log(err)) 
+      }
+
+    });
+  </script>
+{% endif %}

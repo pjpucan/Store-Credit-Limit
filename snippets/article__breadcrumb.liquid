@@ -1,0 +1,49 @@
+<!-- snippets/article__breadcrumb.liquid -->
+{% comment %} 
+  Breadcrumb navigation for blog articles.
+
+  Accepts:
+  - block: {Object} Liquid object containing block settings.
+  
+  Globals:
+  - settings.x_margin: {string} Determines the horizontal margin.
+
+  Usage:
+    {% render 'article__breadcrumb',
+      block: block 
+    %}
+
+  Recomendations:
+  - Render this snippet on an article template.
+{% endcomment %}
+
+<nav 
+  id="article-breadcrumb"
+  class="
+    type--small flex
+    {{ block.settings.layout_x_alignment }}
+    {{ block.settings.color_border }}
+    {{ block.settings.style_border }}
+  "
+  style="
+    padding-top:{{ block.settings.spacing_top }}px;
+    padding-bottom:{{ block.settings.spacing_bottom }}px;
+  " 
+  role="navigation" 
+  aria-label="breadcrumbs">
+  <div 
+    class="
+      w-full max-w-3xl
+      {{ block.settings.layout_text_alignment }}
+    ">
+    <a 
+      href="{{ routes.root_url }}"
+      title="{{ 'labels.home' | t }}">
+      {{ 'labels.home' | t }}
+    </a>
+    <span aria-hidden="true">/</span>
+    {{ blog.title | link_to: blog.url }}
+    <span aria-hidden="true">/</span>
+    <span>{{ article.title }}</span>
+  </div>
+</nav>

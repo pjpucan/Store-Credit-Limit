@@ -1,0 +1,417 @@
+<!-- sections/collection__banner.liquid -->
+{% comment %} 
+  Display a banner with the collection title and featured image.
+
+  Globals:
+  - layout_horizontal: {string} Class string to set horizontal margin.
+  - enable_animations: {boolean} Global setting to determine if animations are enabled.
+  - layout_header_overlap: {integer} Size when setting header overlap.
+
+  Recommendations:
+  - Use images that contrast well with the text overlay.
+  - To display any image this section could be replaced with a banner.liquid section.
+{% endcomment %}
+
+{% liquid
+
+  assign enable_lazy_load = true
+  if section.index == 1
+    assign enable_lazy_load = false
+  endif
+  
+%}
+
+<section 
+  id="{{ section.id }}"
+  class="
+    relative overflow-clip flex items-center justify-center
+    {% if section.settings.enable_header_overlap %}
+      banner--overlap
+    {% endif %}
+    {{ section.settings.visibility }}
+    {{ section.settings.color_scheme }} 
+    {{ section.settings.color_border }}
+    {{ section.settings.style_border }}
+  "
+  {% if section.settings.enable_header_overlap %}
+    x-init="
+      has_banner_overlap = true;
+      header_color = header_overlay_color;
+      header_border = header_overlay_border;
+    "
+  {% endif %}>
+
+  {% comment %} Image background {% endcomment %}
+  {% if section.settings.enable_image %}
+    <div 
+      class="
+        absolute h-full w-full top-0
+        {% if settings.enable_animations %}
+          {% unless section.settings.layout_y_spacing == "xs" %}
+            motion-safe:scroll-blurin-2-20
+          {% endunless %}
+        {% endif %}
+      ">
+      
+      {% comment %} Images {% endcomment %}
+      {% unless collection.featured_image == blank %}
+        <div class="absolute w-full h-full">
+          {% render 'component__image',
+            image: collection.featured_image,
+            max_width: 5760,
+            container_class: 'hidden md:block h-full z-10',
+            crop_class: 'object-cover',
+            enable_lazy_load: enable_lazy_load,
+            enable_2x: true
+          %}
+        </div>
+        <div class="absolute w-full h-full">
+          {% render 'component__image',
+            image: collection.featured_image,
+            max_width: 900,
+            container_class: 'block md:hidden w-full h-full z-10',
+            crop_class: 'object-cover',
+            enable_lazy_load: enable_lazy_load,
+            enable_2x: true
+          %}
+        </div>
+      {% endunless %}
+      
+    </div>
+  {% endif %}
+
+  {% comment %} Banner content {% endcomment %}
+  <div 
+    class="
+      relative z-10 w-full h-full
+      {% if settings.enable_animations %}
+        {% unless section.settings.layout_y_spacing == "xs" %}
+          motion-safe:scroll-blurinandout-5-100
+        {% endunless %}
+      {% endif %}
+    "
+    {% if section.settings.enable_gradient %}
+      style="background: linear-gradient( to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.4) );"
+    {% endif %}>
+
+    <div 
+      class="
+        w-full flex flex-row flex-wrap py-4
+        {% if section.settings.enable_margin %}
+          {{ settings.x_margin }}
+        {% else %}
+          window--full
+        {% endif %}
+        {{ section.settings.layout_x_alignment }}
+        {{ section.settings.layout_y_alignment }}
+        {{ section.settings.layout_y_spacing }}
+        {{ section.settings.color_text }}
+        {% assign colors = section.settings.color_scheme | split: " " %}{{ colors[1] }}
+      ">
+
+      <div 
+        class="
+          w-full flex flex-col gap-2
+          {% if section.settings.enable_max_width %}max-w-prose{% endif %}
+          {% if section.settings.enable_background_overlay %}
+            p-4 w-full border--radius {{ section.settings.color_scheme }}
+          {% endif %}
+        ">
+
+        {% unless collection.title == blank %}
+          <h1>{{ collection.title }}</h1>
+        {% endunless %}
+
+        {% if section.settings.enable_description %}
+          {% unless collection.description == blank %}
+            <div>
+              {{ collection.description }}
+            </div>
+          {% endunless %}
+        {% endif %}
+        
+      </div>
+    </div>
+  </div>
+
+</section>
+
+{% schema %}
+{
+  "name":"t:sections.collection_banner.name",
+  "settings":[
+    {
+      "type":"checkbox",
+      "id":"enable_image",
+      "label":"t:general.settings.show_collection_image.label",
+      "info":"t:general.settings.show_collection_image.info",
+      "default":true
+    },
+    {
+      "type":"header",
+      "content":"t:general.headers.spacing.content"
+    },
+    {
+      "type":"select",
+      "id":"layout_y_spacing",
+      "label":"t:general.settings.y_spacing.label",
+      "options":[
+        {
+          "value":"xs",
+          "label":"t:general.settings.y_spacing.extra_small.label"
+        },
+        {
+          "value":"min-h-[250px] md:min-h-[350px]",
+          "label":"t:general.settings.y_spacing.small.label"
+        },
+        {
+          "value":"min-h-[450px] md:min-h-[550px]",
+          "label":"t:general.settings.y_spacing.medium.label"
+        },
+        {
+          "value":"min-h-[550px] max-h-[75vh] md:min-h-[60vh]",
+          "label":"t:general.settings.y_spacing.large.label"
+        },
+        {
+          "value":"min-h-[550px] max-h-[85vh] md:min-h-[80vh]",
+          "label":"t:general.settings.y_spacing.extra_large.label"
+        }
+      ],
+      "default":"min-h-[250px] md:min-h-[350px]"
+    },
+    {
+      "type":"header",
+      "content":"t:general.headers.color.content"
+    },
+    {
+      "type":"select",
+      "id":"color_scheme",
+      "label":"t:general.settings.color_scheme.label",
+      "options":[
+        {
+          "value":"color__bg-body color__text",
+          "label":"t:general.settings.color_scheme.body.label"
+        },
+        {
+          "value":"color__bg-neutral color__text",
+          "label":"t:general.settings.color_scheme.neutral.label"
+        },
+        {
+          "value":"color__bg-overlay-1 color__text",
+          "label":"t:general.settings.color_scheme.accent_1.label"
+        },
+        {
+          "value":"color__bg-overlay-2 color__text",
+          "label":"t:general.settings.color_scheme.accent_2.label"
+        },
+        {
+          "value":"color__bg-overlay-3 color__text",
+          "label":"t:general.settings.color_scheme.accent_3.label"
+        },
+        {
+          "value":"color__bg-shade-1 color__text",
+          "label":"t:general.settings.color_scheme.shade_1.label"
+        },
+        {
+          "value":"color__bg-shade-2 color__text",
+          "label":"t:general.settings.color_scheme.shade_2.label"
+        },
+        {
+          "value":"color__bg-shade-3 color__text",
+          "label":"t:general.settings.color_scheme.shade_3.label"
+        },
+        {
+          "value":"color__bg-primary color__primary",
+          "label":"t:general.settings.color_scheme.primary.label"
+        },
+        {
+          "value":"color__bg-secondary color__secondary",
+          "label":"t:general.settings.color_scheme.secondary.label"
+        },
+        {
+          "value":"color__bg-tertiary color__tertiary",
+          "label":"t:general.settings.color_scheme.tertiary.label"
+        }
+      ],
+      "default":"color__bg-body color__text"
+    },
+    {
+      "type":"select",
+      "id":"color_text",
+      "label":"t:general.settings.color_text.label",
+      "options":[
+        {
+          "value":"color__text",
+          "label":"t:general.settings.color_text.default.label"
+        },
+        {
+          "value":"color__light",
+          "label":"t:general.settings.color_text.force_light.label"
+        },
+        {
+          "value":"color__dark",
+          "label":"t:general.settings.color_text.force_dark.label"
+        }
+      ],
+      "default":"color__light"
+    },
+    {
+      "type":"select",
+      "id":"color_border",
+      "label":"t:general.settings.color_border.label",
+      "options":[
+        {
+          "value":"color__border-divider-1",
+          "label":"t:general.settings.color_border.subtle.label"
+        },
+        {
+          "value":"color__border-selected-1",
+          "label":"t:general.settings.color_border.strong.label"
+        }
+      ],
+      "default":"color__border-divider-1"
+    },
+    {
+      "type":"checkbox",
+      "id":"enable_gradient",
+      "label":"t:general.settings.enable_gradient.label",
+      "default":false
+    },
+    {
+      "type":"checkbox",
+      "id":"enable_background_overlay",
+      "label":"t:general.settings.enable_background_overlay.label",
+      "default":false
+    },
+    {
+      "type":"header",
+      "content":"t:general.headers.style.content"
+    },
+    {
+      "type":"select",
+      "id":"style_border",
+      "label":"t:general.settings.border_position.label",
+      "options":[
+        {
+          "value":"",
+          "label":"t:general.settings.border_position.none.label"
+        },
+        {
+          "value":"border--t-width",
+          "label":"t:general.settings.border_position.top.label"
+        },
+        {
+          "value":"border--b-width",
+          "label":"t:general.settings.border_position.bottom.label"
+        },
+        {
+          "value":"border--b-width border--t-width",
+          "label":"t:general.settings.border_position.top_and_bottom.label"
+        }
+      ],
+      "default":"border--b-width"
+    },
+    {
+      "type":"header",
+      "content":"t:general.headers.layout.content"
+    },
+    {
+      "type":"select",
+      "id":"layout_y_alignment",
+      "label":"t:general.settings.y_alignment.label",
+      "options":[
+        {
+          "value":"items-start",
+          "label":"t:general.settings.y_alignment.top.label"
+        },
+        {
+          "value":"items-center",
+          "label":"t:general.settings.y_alignment.middle.label"
+        },
+        {
+          "value":"items-end",
+          "label":"t:general.settings.y_alignment.bottom.label"
+        }
+      ],
+      "default":"items-end"
+    },
+    {
+      "type":"select",
+      "id":"layout_x_alignment",
+      "label":"t:general.settings.x_alignment.label",
+      "options":[
+        {
+          "value":"justify-start",
+          "label":"t:general.settings.x_alignment.left.label"
+        },
+        {
+          "value":"justify-center text-center",
+          "label":"t:general.settings.x_alignment.center.label"
+        },
+        {
+          "value":"justify-end text-right",
+          "label":"t:general.settings.x_alignment.right.label"
+        }
+      ],
+      "default":"justify-start"
+    },
+    {
+      "type":"checkbox",
+      "id":"enable_header_overlap",
+      "label":"t:general.settings.enable_header_overlap.label",
+      "info":"t:general.settings.enable_header_overlap.info",
+      "default":false
+    },
+    {
+      "type":"checkbox",
+      "id":"enable_margin",
+      "label":"t:general.settings.enable_margin.label",
+      "default":true
+    },
+    {
+      "type":"checkbox",
+      "id":"enable_max_width",
+      "label":"t:general.settings.enable_max_width.label",
+      "default":true
+    },
+    {
+      "type":"header",
+      "content":"t:general.headers.display.content"
+    },
+    {
+      "type":"select",
+      "id":"visibility",
+      "label":"t:general.settings.visibility.label",
+      "options":[
+        {
+          "value":"",
+          "label":"t:general.settings.visibility.all.label"
+        },
+        {
+          "value":"md:hidden",
+          "label":"t:general.settings.visibility.mobile.label"
+        },
+        {
+          "value":"hidden md:block",
+          "label":"t:general.settings.visibility.desktop.label"
+        }
+      ],
+      "default":""
+    },
+    {
+      "type":"checkbox",
+      "id":"enable_description",
+      "label":"t:general.settings.show_description.label",
+      "default":true
+    }
+  ],
+  "presets":[
+    {
+      "name":"t:sections.collection_banner.name"
+    }
+  ],
+  "templates":[
+    "collection"
+  ]
+}
+{% endschema %}

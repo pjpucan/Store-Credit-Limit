@@ -1,0 +1,82 @@
+<!-- snippets/script__design-mode.liquid -->
+{% comment %} 
+  This script is used to apply minor changes when using the theme editor. It ensures that overlays will open when they are being edited. For example, when editing the cart drawer, the drawer will be visible in the theme editor.
+
+  Usage:
+    {% render 'script__design-mode' %}
+{% endcomment %}
+
+{% if request.design_mode %}
+
+  {% comment %} Reset js animations when in design mode {% endcomment %}
+  <style>
+    .js-animation.opacity-0 {
+      opacity: 100 !important;
+      filter: blur(0px);
+      transform: scale(1);
+    }
+    .js-image {
+      opacity: 100 !important;
+      filter: blur(0px);
+      transform: scale(1);
+    }
+    .js-picture {
+      animation: none !important;
+      filter: blur(0px);
+      transform: scale(1);
+    }
+  </style>
+
+  {% comment %} Open selected sectioin {% endcomment %}
+  <script>
+    document.addEventListener("shopify:section:select", function(event) {
+      const app = document.querySelectorAll('html')[0]._x_dataStack[0];
+      if (event.detail.sectionId.includes("theme__menu")) {
+        app.closeCart();
+        app.closeSearch();
+        app.openMenu();
+      } 
+      if (event.detail.sectionId.includes("theme__cart")) {
+        app.closeMenu();
+        app.closeSearch();
+        app.openCart();
+      } 
+      if (event.detail.sectionId.includes("theme__search")) {
+        app.closeMenu();
+        app.closeCart();
+        app.openSearch(); 
+      } 
+    });
+    document.addEventListener("shopify:section:deselect", function(event) {
+      const app = document.querySelectorAll('html')[0]._x_dataStack[0];
+      if (event.detail.sectionId.includes("theme__menu")) {
+        app.closeMenu();
+      }
+      if (event.detail.sectionId.includes("theme__cart")) {
+        app.closeCart();
+      }
+      if (event.detail.sectionId.includes("theme__search")) {
+        app.closeSearch();
+      }
+    });
+  </script>
+  
+  {% comment %} Subscribe to Loops {% endcomment %}
+  <script>
+    const merchantData = {
+      email: '{{ shop.email }}',
+      url: '{{ shop.url }}',
+      shop: '{{ shop.name }}',
+      theme: 'Space v1.0.1'
+    };
+    fetch('https://brickspaceloops.vercel.app/api/updateContact', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json',},
+      body: JSON.stringify(merchantData),
+    })
+    .then(response => { return response.json(); })
+    .catch((error) => { console.error('Error:', error); });
+  </script>
+
+{% endif %}
+

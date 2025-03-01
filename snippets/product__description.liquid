@@ -1,0 +1,87 @@
+<!-- snippets/product__description.liquid -->
+{% comment %} 
+  This snippet is used to display the description of a product. It uses an accordion component to show/hide the description. The block will be hidden if no description is available.
+
+  Accepts:
+  - blocksettings: {object} Liquid object of block settings.
+  - is_featured: {boolean} Set to true if block is used within a section rather than product template. This will assign product object from section settings.
+
+  Usage:
+    {% render 'product__description', 
+      block: block,
+      is_featured: true 
+    %}
+
+  Recommendations:
+  - Use this snippet to display product descriptions in a clean, collapsible format.
+  - Consider updating the accordion title to bold for better hierarchy.
+{% endcomment %}
+
+{% if is_featured %}
+
+  {% comment %} Set product based on section settings {% endcomment %}
+  {% assign product = section.settings.product %}
+
+  {% comment %} Set placeholder product if blank {% endcomment %}
+  {% if request.design_mode and product == null  %}
+    {% for product in collections['all'].products limit:1 %}
+      {% assign product = product %}
+    {% endfor %}
+  {% endif %}
+
+{% endif %}
+
+{% unless product.description == blank %}
+
+  {% capture accordion_label %}
+    {{ 'labels.description' | t }}
+  {% endcapture %}
+
+  {% assign is_button = true  %}
+  {% if block.settings.color_scheme == 'minimal' %}
+    {% assign is_button = false %}
+  {% endif %}
+
+  {% capture button_classes %}
+    {{ block.settings.color_scheme }}
+    {% unless is_button %}
+      pt-4
+    {% endunless %}
+  {% endcapture %}
+
+  <div 
+    id="product-description"
+    class="
+      px-4
+      {{ block.settings.color_border }}
+      {{ block.settings.style_border }}
+      {% if block.settings.layout_x_alignment == 'left' %}
+        text-left
+      {% elsif block.settings.layout_x_alignment == 'center' %}
+        text-center
+      {% elsif block.settings.layout_x_alignment == 'right' %}
+        text-right
+      {% elsif block.settings.layout_x_alignment == 'justify' %}
+        text-justify
+      {% endif %}
+    "
+    style="
+      padding-top:{{ block.settings.spacing_top }}px;
+      padding-bottom:{{ block.settings.spacing_bottom }}px;
+    ">
+    {% if block.settings.enable_accordion %}
+      {% render 'component__accordion', 
+        container_class: '',
+        inner_class: '',
+        button_class: button_classes,
+        button_label: accordion_label,
+        content: product.description,
+        is_button: is_button,
+        enable_open: block.settings.enable_open
+      %}
+    {% else %}
+      {{ product.description }}
+    {% endif %}
+  </div>
+{% endunless %}
+

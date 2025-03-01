@@ -1,0 +1,25 @@
+{
+  "sections": {
+    "collection_sidebar_BMA6fC": {
+      "type": "collection__sidebar",
+      "settings": {
+        "spacing_top": 110,
+        "spacing_bottom": 100,
+        "color_scheme": "color__bg-body",
+        "color_background": "#ffffff",
+        "color_text": "",
+        "color_border": "color__border-divider-1",
+        "enable_color_fade": false,
+        "layout_row_desktop": 3,
+        "layout_row_mobile": 1,
+        "enable_margin": true,
+        "enable_sort": true,
+        "enable_filter": true,
+        "products_per_page": 12
+      }
+    }
+  },
+  "order": [
+    "collection_sidebar_BMA6fC"
+  ]
+}

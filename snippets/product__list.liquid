@@ -1,0 +1,72 @@
+<!-- snippets/product__list.liquid -->
+{% comment %} 
+  Block for displaying up to three list items with content.
+
+  Accepts:
+  - blocksettings: {object}: A liquid object of block settings.
+      
+  Usage:
+    {% render 'product__list', 
+      block: block 
+    %}
+
+  Recommendations:
+  - Use metafields to display dynamic product content.
+{% endcomment %}
+
+{% liquid
+  assign list_titles = block.settings.list_titles | split: ','
+  assign first_list_title = list[0] | handle
+%}
+
+<div 
+  id="product-text"
+  class="
+    w-full flex flex-col gap-4
+    {{ block.settings.color_scheme }}
+    {{ block.settings.color_border }}
+    {{ block.settings.style_border }}
+    {% if block.settings.layout_x_alignment == 'left' %}
+      text-left
+    {% elsif block.settings.layout_x_alignment == 'center' %}
+      text-center
+    {% elsif block.settings.layout_x_alignment == 'right' %}
+      text-right
+    {% elsif block.settings.layout_x_alignment == 'justify' %}
+      text-justify
+    {% endif %}
+  "
+  style="
+    padding-top:{{ block.settings.spacing_top }}px;
+    padding-bottom:{{ block.settings.spacing_bottom }}px;
+  "
+  x-data="{
+    selected_tab: '{{ first_list_title }}',
+  }">
+
+  {% comment %} Tab containers {% endcomment %}
+  {% for list_title in list_titles %}
+    <div 
+      class="px-4">
+      <div class="flex items-start gap-4">
+        <div class="sticky flex w-1/4 opacity-75 top-4">
+          {{ list_title }}
+        </div>
+        <div class="w-3/4 rte">
+          {% case forloop.index %}
+            {% when 1 %}
+              {{ block.settings.content_1 }}
+            {% when 2 %}
+              {{ block.settings.content_2 }}
+            {% when 3 %}
+              {{ block.settings.content_3 }}
+            {% else %}
+              {{ block.settings.content_1 }}
+          {% endcase %}
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+
+</div>
+

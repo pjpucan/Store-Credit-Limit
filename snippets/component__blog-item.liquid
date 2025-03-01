@@ -1,0 +1,172 @@
+<!-- snippets/component__blog-item.liquid -->
+{% comment %} 
+  A component that generates a thumbnail for a blog article. It accepts a Liquid object for the blog article and uses several properties to customize the appearance of the thumbnail.
+
+  Accepts: 
+  - article: {Object} Liquid object for the blog article.
+
+  Globals:
+  - settings.blog_card_border_style: {string} Class string to set border style.
+  - settings.blog_card_color_border: {string} Class string to set border color.
+  - settings.blog_card_color_scheme: {string} Class string to set color scheme.
+  - settings.blog_cards_object: {string} Class string to set crop level.
+  - settings.blog_card_title_font: {string} Set the font family for titles.
+  - settings.blog_cards_title_capitlization: {string} Set the capitalization.
+  - settings.blog_card_enable_author: {boolean} Boolean to show/hide author.
+  - settings.blog_card_enable_summary: {boolean} Boolean to show/hide article summary.
+  - settings.blog_card_enable_date: {boolean} Boolean to show/hide publication date.
+  - settings.blog_card_enable_tags: {boolean} Boolean to show/hide article tags.
+
+  Usage:
+    {% render 'component__blog-item', 
+      article: article 
+    %}
+
+  Recommendations:
+  - This is commonly used on blog templates or article grid sections.
+  - To customize the appearance of the thumbnail, adjust the global settings.
+  - To use this component, pass in the article object when rendering.
+{% endcomment %}
+
+{% liquid
+  capture badge_background
+    if settings.blog_card_badge_scheme == "light_outline" or settings.blog_card_badge_scheme == "dark_outline"
+      echo "trasnsparent"
+    else
+      echo settings.blog_card_badge_scheme
+    endif
+  endcapture
+  capture badge_foreground
+    if settings.blog_card_badge_scheme == "light_outline"
+      echo "light"
+    elsif settings.blog_card_badge_scheme == "dark_outline"
+      echo "dark"
+    else
+      echo settings.blog_card_badge_scheme
+    endif
+  endcapture
+%}
+
+{% capture date %}{{ article.published_at | date: format: 'abbreviated_date' }}{% endcapture %}
+
+<a 
+  href="{{ article.url }}"
+  class="
+    hover:no-underline hover:opacity-90 no-underline relative flex flex-wrap group/blog content-start
+    {% if settings.blog_card_border_style == 'thumbnail' %}
+      border--radius overflow-clip
+      {{ settings.blog_card_color_scheme }}
+      {{ settings.blog_card_color_border }} 
+    {% endif %}
+  ">
+  
+  {% comment %} Badges {% endcomment %}
+  <div 
+    class="absolute top-0 left-0 z-10 flex flex-wrap w-full gap-2 p-4 whitespace-normal group-hover/blog:opacity-0 animation-300">
+    
+    {% comment %} Tags {% endcomment %}
+    {% if settings.blog_card_enable_tags and article.tags.size > 0 %}
+      {% for tag in article.tags %}
+        {% capture badge_content %}{{ tag }}{% endcapture %}
+        {% render 'component__badge', 
+          background: badge_background,
+          text: badge_foreground,
+          border: badge_foreground,
+          content: badge_content 
+        %}
+      {% endfor %}
+    {% endif %}
+    
+  </div>
+
+  {% comment %} Image and overlay {% endcomment %}
+  <div
+    class="
+      relative block w-full overflow-clip
+      {% if settings.blog_card_border_style == 'image' %}
+        border--radius
+        {{ settings.blog_card_color_border }} 
+      {% endif %}
+    ">
+
+    {% comment %} Image {% endcomment %}
+    {% unless article.image == blank %}
+      {% capture aspect_ratio %}
+        {{ settings.blog_card_ratio }}
+      {% endcapture %}
+      {% capture crop %}
+        {% if settings.blog_card_crop == "cover" %}
+          object-cover
+        {% else %}
+          object-contain
+        {% endif %}
+      {% endcapture %}
+      {% render 'component__image',
+        image: article.image,
+        max_width: 1600,
+        background_class: 'color__bg-shade-2',
+        image_class: 'w-full h-full',
+        ratio_class: aspect_ratio,
+        crop_class: crop,
+        enable_lazy_load: true,
+        enable_2x: true
+      %}
+    {% endunless %}
+
+    {% comment %} Overlay {% endcomment %}
+    <div 
+      class="
+        group-hover/blog:opacity-100 animation-300 absolute top-0 bottom-0 w-full p-4 opacity-0
+        {{ settings.blog_card_overlay_text }}
+      "
+      style="
+        background: {{ settings.blog_cards_color_overlay }};
+      ">
+
+      {% comment %} Author {% endcomment %}
+      {% if settings.blog_card_enable_author %}
+        <p class="uppercase opacity-50 type--smaller">{{ 'labels.written_by' | t }}</p>
+        <p class="mb-4">{{ article.author }}</p>
+      {% endif %}
+
+      {% comment %} Article summary {% endcomment %}
+      {% if settings.blog_card_enable_summary %}
+        <p class="space-y-2">
+          {{ article.excerpt_or_content | truncate: 200 | strip_html | strip }}
+        </p>
+      {% endif %}
+      
+    </div>
+
+  </div>
+
+  {% comment %} Content {% endcomment %}
+  <div 
+    class="
+      w-full
+      {{ settings.blog_card_alignment }}
+      {% if settings.blog_card_border_style == 'thumbnail' %}
+        p-4
+      {% else %}
+        py-4
+      {% endif %}
+    ">
+
+    {% comment %} Date {% endcomment %}
+    {% if settings.blog_card_enable_date %}
+      <span class="opacity-75 type--small">{{ date }}</span>
+    {% endif %} 
+
+    {% comment %} Article title {% endcomment %}
+    <h3 
+      class="
+        m-0
+        {{ settings.blog_card_title_capitlization }}
+        {{ settings.blog_card_title_font }}
+      ">
+      {{ article.title }}
+    </h3>
+    
+  </div>
+
+</a>

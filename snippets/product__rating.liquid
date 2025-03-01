@@ -1,0 +1,75 @@
+<!-- snippets/product__rating.liquid -->
+{% comment %} 
+  Block to display product rating from metafields. 
+
+  Accepts:
+  - blocksettings: {object} Liquid object of block settings.
+  - is_featured: {boolean} Assigns product object from section settings. Set this to true if block is used within a section rather than product template.
+      
+  Usage:
+    {% render 'product__rating', 
+      block: block, 
+      is_featured: true 
+    %}
+
+  Possible enhancements:
+  - Add ability to click to scroll to review section. 
+
+  Recommendations:
+  - Many apps may have their own app blocks that can be used instead of this.
+  - This can be used when review apps update the standard review metafields (e.g. product.metafields.reviews.rating.value)
+{% endcomment %}
+
+{% if is_featured %}
+
+  {% comment %} Set product based on section settings {% endcomment %}
+  {% assign product = section.settings.product %}
+
+  {% comment %} Set placeholder product if blank {% endcomment %}
+  {% if request.design_mode and product == null  %}
+    {% for product in collections['all'].products limit:1 %}
+      {% assign product = product %}
+    {% endfor %}
+  {% endif %}
+
+{% endif %}
+
+{% assign rating = product.metafields.reviews.rating.value.rating | times: 1 %}
+{% assign rating_floor = rating | floor %}
+{% assign max = product.metafields.reviews.rating.value.scale_max | floor %}
+
+{% unless product.metafields.reviews.rating.value == blank %}
+  <div 
+    id="product-rating"
+    class="
+      px-4 w-full
+      {{ block.settings.color_scheme }}
+      {{ block.settings.color_border }}
+      {{ block.settings.style_border }}
+    "
+    style="
+      padding-top:{{ block.settings.spacing_top }}px;
+      padding-bottom:{{ block.settings.spacing_bottom }}px;
+    ">
+    <div class="flex items-center text-right">
+
+      {% if product.metafields.reviews.rating.value != blank %}
+        <div class="flex items-center gap-0.5">
+          {% liquid 
+            for iteration in (1..max)
+              if iteration <= rating_floor
+                render 'component__icon', icon: 'star-fill', size: '16', class: ''
+              endif
+            endfor 
+            assign rating_string = rating | append: ""
+            unless rating_string contains '.0'
+              render 'component__icon', icon: 'star-half', size: '16', class: ''
+            endunless
+          %}
+          <span class="opacity-50 type--smaller">({{ product.metafields.reviews.rating_count }})</span>
+        </div>
+      {% endif %}
+      
+    </div>
+  </div>
+{% endunless %}

@@ -1,0 +1,74 @@
+<!-- snippets/component__drawer.liquid -->
+{% comment %} 
+  Slideout drawer to show extra content behind a click.
+
+  Accepts:
+  - drawer_id: {string} Unique id of drawer, should be set on top level elements.
+  - position: {string} Can be set to 'left' or 'right'.
+  - content: {Object} Liquid object of drawer contents.
+  
+  Globals:
+  - color_background_overlay: {string} Set the background color of the overlay
+  - enable_animations: {boolean} Enable or disable animations
+
+  Usage:
+    {% render 'component__drawer', 
+      drawer_id: 'menu_drawer',
+      position: 'left',
+      content: drawer_content 
+    %}
+  
+  Recommendations:
+    - For this component to be accesibile by all other elements of the site we need to define the drawer_id on a global level - see theme__scripts.liquid for an example of how this is done.
+{% endcomment %}
+
+<section
+  class="fixed inset-0 z-50 overflow-hidden"
+  @keyup.escape.window="{{ drawer_id }} = false;"
+  x-show="{{ drawer_id }}"
+  x-cloak>
+
+  {% comment %} Overlay {% endcomment %}
+  <div class="absolute inset-0 backdrop-blur-md"
+    style="background: {{ settings.color_background_overlay }};"
+    aria-hidden="true"
+    @click="
+      {{ drawer_id }} = false; 
+      has_overlay = false;
+      quick_edit_handle = '';
+    "
+    x-show="{{ drawer_id }}"
+    {% if settings.enable_animations %}
+      x-transition:enter="animation-300"
+      x-transition:enter-start="opacity-0"
+      x-transition:enter-end="opacity-100"
+      x-transition:leave="animation-300"
+      x-transition:leave-start="opacity-100"
+      x-transition:leave-end="opacity-0"
+    {% endif %}
+    x-cloak>
+  </div>
+
+  {% comment %} Drawer {% endcomment %}
+  <div
+    class="fixed inset-y-0 flex w-screen max-w-full md:max-w-xl
+    {% if position == 'left' %}left-0 justify-start{% else %}right-0 justify-end{% endif %}"
+    x-trap="{{ drawer_id }}"
+    x-show="{{ drawer_id }}"
+    {% if settings.enable_animations %}
+      x-transition:enter="animation-300 opacity-0 {% if position == 'left' %}-translate-x-8{% else %}translate-x-8{% endif %}"
+      x-transition:enter-start="opacity-0 {% if position == 'left' %}-translate-x-8{% else %}translate-x-8{% endif %}"
+      x-transition:enter-end="translate-x-0 opacity-100"
+      x-transition:leave="animation-300 opacity-100 {% if position == 'left' %}-translate-x-8{% else %}translate-x-8{% endif %}"
+      x-transition:leave-start="translate-x-0 opacity-100"
+      x-transition:leave-end="opacity-0 {% if position == 'left' %}-translate-x-8{% else %}translate-x-8{% endif %}"
+    {% endif %}
+    x-cloak>
+    <div class="w-screen md:max-w-xl">
+      <div class="flex flex-col h-full overflow-y-auto color__bg-body color__text">
+        {{ content }}
+      </div>
+    </div>
+  </div>
+  
+</section>

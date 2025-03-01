@@ -1,0 +1,49 @@
+<!-- snippets/article__image.liquid -->
+{% comment %} 
+  Additonal image for a blog article.
+  
+  Accepts:
+  - block: {Object} Liquid object containing block settings.
+
+  Globals:
+  - settings.x_margin: {string} Determines the horizontal margin.
+
+  Usage:
+    {% render 'article__image',
+      block: block 
+    %}
+
+  Recommendations:
+  - Render this snippet on an article template.
+{% endcomment %}
+
+<div 
+  id="article-image"
+  class="
+    {{ block.settings.color_border }}
+    {{ block.settings.style_border }}
+  "
+  style="
+    padding-top:{{ block.settings.spacing_top }}px;
+    padding-bottom:{{ block.settings.spacing_bottom }}px;
+  ">
+  <div 
+    class="flex">
+    <div 
+      class="w-full rte">
+      {% unless block.settings.image == blank %}
+        {% render 'component__image', 
+          image: block.settings.image,
+          aspect_ratio: '',
+          background: 'color__bg-shade-2',
+          crop: 'object-cover',
+          container_class: '',
+          image_class: '',
+          max_width: 5760,
+          enable_lazy_load: true,
+          enable_2x: true
+        %}
+      {% endunless %}
+    </div>
+  </div>
+</div>

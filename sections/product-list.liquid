@@ -1,0 +1,516 @@
+<!-- sections/product-list.liquid -->
+{% comment %} 
+  List of product titles, hover each reveals an image.
+
+  Globals:
+  - layout_horizontal: {string} Horizontal margin from global theme settings.
+  - layout_gap_size: {integer} Set the gap between grid items.
+{% endcomment %}
+
+<section 
+  id="{{ section.id }}"
+  class="
+    animation-1000 overflow-clip
+    {{ section.settings.visibility }}
+    {{ section.settings.color_border }}
+    {{ section.settings.style_border }}
+    {% unless section.settings.enable_color_fade %}
+      {{ section.settings.color_text }}
+      {% unless section.settings.color_scheme == 'custom' %}
+        {{ section.settings.color_scheme }}
+      {% endunless %}
+    {% endunless %}
+  "
+  {% if section.settings.color_scheme == 'custom' %}
+    {% unless section.settings.enable_color_fade %}
+      style="
+        background:{{ section.settings.color_background }};
+      "
+    {% endunless %}
+  {% endif %}
+  {% if section.settings.enable_color_fade %}
+    :class="`${body_background_color} ${body_text_color}`"
+    :style="{ background: body_background_color }"
+    x-intersect.margin.-50%="
+      body_background_color = '{% if section.settings.color_scheme == 'custom' %}{{ section.settings.color_background }}{% else %}{{ section.settings.color_scheme }}{% endif %}';
+      body_text_color = '{{ section.settings.color_text }}';
+    "
+  {% endif %}
+  x-data="{
+    mouse_x: 0,
+    mouse_y: 0
+  }"
+  @mousemove="
+    mouse_x = $event.clientX; 
+    mouse_y = $event.clientY;
+  ">
+  <div 
+    style="
+      padding-top:{{ section.settings.spacing_top }}px;
+      padding-bottom:{{ section.settings.spacing_bottom }}px;
+    ">
+    <div
+      class="
+        flex flex-wrap items-start justify-between
+        {% if section.settings.enable_split %}
+          flex-row
+        {% else %}
+          flex-col
+        {% endif %}
+      ">
+            
+      {% comment %} List {% endcomment %}
+      <div      
+        class="
+          grid w-full relative
+          {% if section.settings.enable_split %}md:w-2/3{% endif %}
+        ">
+        {% for product in collections[section.settings.collection].products limit: section.settings.products_count %}
+          <div
+            x-data="{
+              row_height: '100px'
+            }">
+
+            {% comment %} Row {% endcomment %}
+            <a 
+              href="{{ product.url }}"
+              class="relative no-underline group hover:opacity-100 hover:no-underline"
+              x-ref="row"
+              x-init="
+                row_height = $refs.row.offsetHeight;
+              ">
+
+              {% comment %} Details {% endcomment %}
+              <div 
+                class="
+                  relative z-10 scroll-fadeinandouthalf-dynamic md:scroll-fadein-2-20
+                  {% if section.settings.enable_margin %}
+                    {{ settings.x_margin }}
+                  {% else %}
+                    px-4
+                  {% endif %}
+                "
+                :style="{
+                  '--offset-1': 'calc(30% + ' + (row_height * 2) + 'px)',
+                  '--offset-2': 'calc(40% + ' + (row_height * 2) + 'px)'
+                }">
+                <div 
+                  class="
+                    flex items-center gap-6 py-4 md:opacity-50 group-hover:opacity-100 md:animation-300
+                    {{ section.settings.layout_x_alignment }}
+                  ">
+                  
+                  {% comment %} Title {% endcomment %}
+                  <h2 class="type__heading-1 group-hover:underline">
+                    {{ product.title }}
+                  </h2>
+
+                  {% comment %} Prices, taglines and rating {% endcomment %}
+                  <div class="hidden type--small md:block">
+
+                    {% comment %} Prices {% endcomment %}
+                    {% if section.settings.show_prices %}
+                      <div 
+                        class="shrink">
+
+                        {% comment %} Price {% endcomment %}
+                        <div 
+                          class="
+                            flex flex-wrap items-center gap-1
+                            {% if settings.product_card_alignment == "center" %}
+                              justify-center
+                            {% endif %}
+                            {% if settings.product_card_alignment == "right" or settings.product_card_alignment == "justified" %}
+                              justify-end
+                            {% endif %}
+                          ">
+
+                          {% comment %} Starting price {% endcomment %}
+                          <span>
+                            {% if product.price_varies and settings.price_range == "show_starting_price" %}
+                              <span>
+                                {{ 'labels.from' | t }}
+                              </span>
+                            {% endif %}
+                            {% render 'component__format-price', price: product.price_min %}
+                          </span>
+
+                          {% comment %} If showing range {% endcomment %}
+                          {% if product.price_varies and settings.price_range == "show_range" %}
+                            <span>
+                              - 
+                              {% render 'component__format-price', price: product.price_max %}
+                            </span>
+                          {% endif %}
+
+                          {% comment %} Sale price {% endcomment %}
+                          {% if product.compare_at_price_max > 0 %}
+                            <span class="opacity-50">
+                              <s>
+                                {% render 'component__format-price', price: product.compare_at_price_max %}
+                              </s>
+                            </span>
+                          {% endif %}
+                        </div>
+
+                      </div>
+                    {% endif %}
+
+                    {% comment %} Tagline {% endcomment %}
+                    {% if section.settings.show_tagline and product.metafields.descriptors.subtitle %}
+                      <p>
+                        {{ product.metafields.descriptors.subtitle }}
+                      </p>
+                    {% endif %}
+
+                    {% comment %} Rating {% endcomment %}
+                    {% if section.settings.show_rating_text %}
+                      {% assign rating = product.metafields.reviews.rating.value.rating | times: 1 %}
+                      {% assign rating_floor = rating | floor %}
+                      {% assign max = product.metafields.reviews.rating.value.scale_max | floor %}
+                      {% if product.metafields.reviews.rating.value != blank %}
+                        <div class="flex items-center gap-0.5">
+                          {% liquid 
+                            for iteration in (1..max)
+                              if iteration <= rating_floor
+                                render 'component__icon', icon: 'star-fill', size: '16', class: ''
+                              endif
+                            endfor 
+                            assign rating_string = rating | append: ""
+                            unless rating_string contains '.0'
+                              render 'component__icon', icon: 'star-half', size: '16', class: ''
+                            endunless
+                          %}
+                          <span class="opacity-50 type--smaller">({{ product.metafields.reviews.rating_count }})</span>
+                        </div>
+                      {% endif %}
+                    {% endif %}
+                    
+                  </div>
+                
+                </div>
+              </div>
+
+              {% comment %} Image {% endcomment %}
+              {% unless product.featured_image == blank %}
+                <div
+                  class="fixed top-0 hidden w-full -translate-x-1/2 -translate-y-1/2 pointer-events-none md:block"
+                  style="
+                    max-width: {{ section.settings.image_height }}px;
+                  "
+                  :style="`
+                    max-width: {{ section.settings.image_height }}px;
+                    left: ${mouse_x}px; 
+                    top: ${mouse_y}px;
+                  `">
+                  <div 
+                    class="
+                      opacity-0 overflow-clip group-hover:opacity-100
+                      {{ settings.product_card_ratio }}
+                    ">
+                    {% render 'component__image', 
+                      image: product.featured_image,
+                      max_width: 2000,
+                      background_class: 'color__bg-shade-2',
+                      image_class: 'w-full h-full',
+                      ratio_class: settings.product_card_ratio,
+                      crop_class: 'object-cover',
+                      enable_lazy_load: true,
+                      enable_2x: true
+                    %}
+                  </div>
+                </div>
+              {% endunless %}
+
+            </a>
+            
+          </div>
+        {% endfor %}
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name":"t:sections.product_list.name",
+  "settings":[
+    {
+      "type":"header",
+      "content":"t:general.headers.color.content"
+    },
+    {
+      "type":"collection",
+      "id":"collection",
+      "label":"t:general.settings.collection.label"
+    },
+    {
+      "type":"number",
+      "id":"products_count",
+      "label":"t:general.settings.total_items.label",
+      "default":7
+    },
+    {
+      "type":"header",
+      "content":"t:general.headers.spacing.content"
+    },
+    {
+      "type":"range",
+      "id":"spacing_top",
+      "min":0,
+      "max":300,
+      "step":10,
+      "unit":"px",
+      "label":"t:general.settings.top_spacing.label",
+      "default":300
+    },
+    {
+      "type":"range",
+      "id":"spacing_bottom",
+      "min":0,
+      "max":300,
+      "step":10,
+      "unit":"px",
+      "label":"t:general.settings.bottom_spacing.label",
+      "default":300
+    },
+    {
+      "type":"header",
+      "content":"t:general.headers.color.content"
+    },
+    {
+      "type":"select",
+      "id":"color_scheme",
+      "label":"t:general.settings.color_scheme.label",
+      "options":[
+        {
+          "value":"color__bg-body",
+          "label":"t:general.settings.color_scheme.body.label"
+        },
+        {
+          "value":"color__bg-neutral",
+          "label":"t:general.settings.color_scheme.neutral.label"
+        },
+        {
+          "value":"color__bg-overlay-1",
+          "label":"t:general.settings.color_scheme.accent_1.label"
+        },
+        {
+          "value":"color__bg-overlay-2",
+          "label":"t:general.settings.color_scheme.accent_2.label"
+        },
+        {
+          "value":"color__bg-overlay-3",
+          "label":"t:general.settings.color_scheme.accent_3.label"
+        },
+        {
+          "value":"color__bg-shade-1",
+          "label":"t:general.settings.color_scheme.shade_1.label"
+        },
+        {
+          "value":"color__bg-shade-2",
+          "label":"t:general.settings.color_scheme.shade_2.label"
+        },
+        {
+          "value":"color__bg-shade-3",
+          "label":"t:general.settings.color_scheme.shade_3.label"
+        },
+        {
+          "value":"color__bg-primary",
+          "label":"t:general.settings.color_scheme.primary.label"
+        },
+        {
+          "value":"color__bg-secondary",
+          "label":"t:general.settings.color_scheme.secondary.label"
+        },
+        {
+          "value":"color__bg-tertiary",
+          "label":"t:general.settings.color_scheme.tertiary.label"
+        },
+        {
+          "value":"custom",
+          "label":"t:general.settings.color_scheme.custom.label"
+        }
+      ],
+      "default":"color__bg-body"
+    },
+    {
+      "type":"color",
+      "id":"color_background",
+      "label":"t:general.settings.color_custom.label",
+      "info":"t:general.settings.color_custom.info",
+      "default":"#ffffff"
+    },
+    {
+      "type":"select",
+      "id":"color_text",
+      "label":"t:general.settings.color_text.label",
+      "options":[
+        {
+          "value":"",
+          "label":"t:general.settings.color_text.default.label"
+        },
+        {
+          "value":"color__light",
+          "label":"t:general.settings.color_text.force_light.label"
+        },
+        {
+          "value":"color__dark",
+          "label":"t:general.settings.color_text.force_dark.label"
+        }
+      ],
+      "default":""
+    },
+    {
+      "type":"select",
+      "id":"color_border",
+      "label":"t:general.settings.color_border.label",
+      "options":[
+        {
+          "value":"color__border-divider-1",
+          "label":"t:general.settings.color_border.subtle.label"
+        },
+        {
+          "value":"color__border-selected-1",
+          "label":"t:general.settings.color_border.strong.label"
+        }
+      ],
+      "default":"color__border-divider-1"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_color_fade",
+      "label":"t:general.settings.enable_color_fade.label",
+      "info":"t:general.settings.enable_color_fade.info",
+      "default": false
+    },
+    {
+      "type":"header",
+      "content":"t:general.headers.style.content"
+    },
+    {
+      "type":"select",
+      "id":"style_border",
+      "label":"t:general.settings.border_position.label",
+      "options":[
+        {
+          "value":"",
+          "label":"t:general.settings.border_position.none.label"
+        },
+        {
+          "value":"border--t-width",
+          "label":"t:general.settings.border_position.top.label"
+        },
+        {
+          "value":"border--b-width",
+          "label":"t:general.settings.border_position.bottom.label"
+        },
+        {
+          "value":"border--b-width border--t-width",
+          "label":"t:general.settings.border_position.top_and_bottom.label"
+        }
+      ],
+      "default":"border--b-width"
+    },
+    {
+      "type":"header",
+      "content":"t:general.headers.layout.content"
+    },
+    {
+      "type":"select",
+      "id":"layout_x_alignment",
+      "label":"t:general.settings.x_alignment.label",
+      "options":[
+        {
+          "value":"justify-start",
+          "label":"t:general.settings.x_alignment.left.label"
+        },
+        {
+          "value":"justify-center text-center",
+          "label":"t:general.settings.x_alignment.center.label"
+        },
+        {
+          "value":"justify-end text-right",
+          "label":"t:general.settings.x_alignment.right.label"
+        }
+      ],
+      "default":"justify-start"
+    },
+    {
+      "type": "range",
+      "id": "image_height",
+      "min": 20,
+      "max": 600,
+      "step": 20,
+      "unit": "px",
+      "label": "t:general.settings.image_height.label",
+      "default": 400
+    },
+    {
+      "type":"checkbox",
+      "id":"enable_margin",
+      "label":"t:general.settings.enable_margin.label",
+      "default":true
+    },
+    {
+      "type":"header",
+      "content":"t:general.headers.display.content"
+    },
+    {
+      "type":"select",
+      "id":"visibility",
+      "label":"t:general.settings.visibility.label",
+      "options":[
+        {
+          "value":"",
+          "label":"t:general.settings.visibility.all.label"
+        },
+        {
+          "value":"md:hidden",
+          "label":"t:general.settings.visibility.mobile.label"
+        },
+        {
+          "value":"hidden md:block",
+          "label":"t:general.settings.visibility.desktop.label"
+        }
+      ],
+      "default":""
+    },
+    {
+      "type":"checkbox",
+      "id":"show_prices",
+      "label":"t:general.settings.show_prices.label",
+      "default":false
+    },
+    {
+      "type":"checkbox",
+      "id":"show_rating_text",
+      "label":"t:general.settings.show_rating_text.label",
+      "default":false
+    },
+    {
+      "type":"checkbox",
+      "id":"show_tagline",
+      "label":"t:general.settings.show_tagline.label",
+      "default":false
+    }
+  ],
+  "presets":[
+    {
+      "name":"t:sections.product_list.name",
+      "settings":{
+        "color_border":"color__border-divider-1",
+        "style_border":"border--b-width",
+        "collection":"all",
+        "products_count":7
+      }
+    }
+  ],
+  "disabled_on":{
+    "groups":[
+      "custom.overlay"
+    ]
+  }
+}
+{% endschema %}

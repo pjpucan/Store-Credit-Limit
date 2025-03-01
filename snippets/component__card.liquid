@@ -1,0 +1,97 @@
+<!-- snippets/component__card.liquid -->
+{% comment %} 
+This is a basic linkable card component with text and a background image.
+
+  Accepts:
+  - url: {string} URL for the card link.
+  - image: {Object} Image object for the background.
+  - title: {string} Title of the card.
+  - content: {string} Content text of the card.
+  - button_label: {string} Label for the card's button.
+  - color_scheme: {string} Classes to apply the color scheme.
+  - color_border: {string} Classes to apply the color border.
+  - button_color: {string} Color for the card's button.
+  - layout_x_alignment: {string} Alignment (left, center, right). Default is left.
+
+  Usage:
+    {% render 'component__card',       
+      url: block.settings.url,
+      image: block.settings.image,
+      title: block.settings.heading, 
+      content: block.settings.content,
+      button_label: block.settings.button_label,
+      color_scheme: block.settings.color_scheme,
+      color_border: block.settings.color_border,
+      button_color: block.settings.button_color,
+      layout_x_alignment: block.settings.layout_x_alignment
+    %}
+
+  Recommendations:
+  - Use this snippet to create a card with a link, image, title, and content. The card's appearance can be customized with color and alignment options.
+{% endcomment %}
+
+<a href="{{ url }}"
+  class="min-w-[256px] hover:no-underline hover:opacity-90 no-underline relative flex flex-wrap group/card overflow-hidden border--radius border--width
+  {{ color_border }} 
+  {{ color_scheme }}
+  {% if layout_x_alignment == 'left' %}
+    justify-start
+  {% elsif layout_x_alignment == 'center' %}
+    justify-center
+  {% elsif layout_x_alignment == 'right' %}
+    justify-end
+  {% endif %}">
+
+  {% comment %} Check if image is blank {% endcomment %}
+  {% unless image == blank %}
+    {% render 'component__image', 
+      image: image,
+      max_width: 1600,
+      background_class: 'color__bg-shade-2',
+      image_class: ' group-hover/card:scale-105 animation-500',
+      ratio_class: 'aspect-2/3',
+      crop_class: 'object-cover',
+      enable_lazy_load: true,
+      enable_2x: true
+    %}
+  {% endunless %}
+
+  {% comment %} Content {% endcomment %}
+  <div 
+    class="
+      p-4 gap-2 flex flex-col
+      {% unless image == blank %}
+        absolute bottom-0
+      {% endunless %}
+      {% if layout_x_alignment == 'left' %}
+        text-left items-start
+      {% elsif layout_x_alignment == 'center' %}
+        text-center items-center
+      {% elsif layout_x_alignment == 'right' %}
+        text-right items-end
+      {% endif %}
+    ">
+
+    {% unless title == blank %}
+      <h3>
+        {{ title }}
+      </h3>
+    {% endunless %}
+    {% unless content == blank %}
+      <div 
+        class="space-y-2">
+        {{ content }}
+      </div>
+    {% endunless %}
+    {% unless button_label == blank %}
+      <button 
+        class="btn
+        {{ button_color }}"
+        tabindex="-1">
+        {{ button_label }}
+      </button>
+    {% endunless %}
+
+  </div>
+
+</a>

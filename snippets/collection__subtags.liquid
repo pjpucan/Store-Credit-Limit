@@ -1,0 +1,70 @@
+<!-- snippets/collection__subtags.liquid -->
+{% comment %} 
+  Secondary navigation for collection pages. Use tags for quick filtering.
+
+  Globals:
+  - layout_horizontal: {string} Class string to set horizontal margin.
+
+  Usage:
+    {% render 'collection__subtags' %}
+
+  Recommendations:
+    - Use this snippet on collection templates.
+    - These links are populated using metafields. For more information on how to add and manage metafields, refer to this guide: https://help.brickspacelab.com/en/articles/273-core-templates-collection
+{% endcomment %}
+
+{% assign raw_sub_tags = collection.metafields.custom.subtags %}
+
+{% if raw_sub_tags != blank %}
+  <section
+    class="
+      animation-1000
+      {{ section.settings.color_text }}
+      {% unless section.settings.color_scheme == 'custom' %}
+        {{ section.settings.color_scheme }}
+      {% endunless %}
+    "
+    {% if section.settings.color_scheme == 'custom' %}
+      style="
+        background:{{ section.settings.color_background }};
+      "
+    {% endif %}>
+    <nav 
+      class="
+        border--b-width flex flex-wrap
+        {{ section.settings.color_border }}
+        {% if section.settings.enable_margin %}
+          {{ settings.x_margin }}
+        {% else %}
+          window--full
+        {% endif %}
+      ">
+      <div class="relative w-full">
+        <div class="inline-flex w-full gap-6 overflow-x-auto whitespace-nowrap scroll-smooth snap-x">
+          <div class="flex justify-center flex-none snap-center">
+            <a href="{{ collection.url }}"
+              class="no-underline type--big py-4 border--b-width color__border-selected-1
+              {% if current_tags != blank %}opacity-40 !border-b-0{% endif %}">
+              {{ 'labels.all' | t }}
+            </a>
+          </div>
+          {% for item in raw_sub_tags.value %}
+            <div class="flex justify-center flex-none snap-center">
+              <a href="{{ collection.url }}/{{ item | split: ',' | last | handle }}"
+                class="no-underline type--big opacity-40 py-4
+                {% assign handleized_current_tags = current_tags | handleize %}
+                {% assign handleized_item = item | handleize %}
+                {% if handleized_current_tags == handleized_item %}
+                  !opacity-100
+                  border--b-width
+                  color__border-selected-1
+                {% endif %}">
+                {{ item | split: ',' | first }}
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </nav> 
+  </section>
+{% endif %}

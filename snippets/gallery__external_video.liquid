@@ -1,0 +1,63 @@
+{% comment %} 
+  This snippet is used to embed external videos from YouTube or Vimeo with specific settings for looping, muting, and color. It supports responsive aspect ratios and can be used as an overlay or within a section with configurable aspect ratios.
+
+  Accepts:
+  - media: {Object} Liquid object containing video details like host platform and other attributes.
+  - ratio_class: {string} CSS class to control the aspect ratio of the video container.
+  - crop_class: {string} CSS class to control the aspect ratio of the video container.
+
+  Usage:
+    {% render 'gallery__external_video',
+      media: product.media.first,
+      ratio_class: 'aspect-ratio-16-9',
+      crop_class: 'object-cover'
+    %}
+
+  Recommendations:
+  - Use this snippet to enhance product or collection pages with video content.
+  - Ensure that the 'media' object is correctly populated with necessary video details.
+  - Customize 'ratio_class' as needed to fit the design requirements of your theme.
+{% endcomment %}
+
+{% liquid
+  capture container_classes
+    echo ratio_class
+    echo " w-full h-full"
+  endcapture
+  
+  capture video_class
+    if crop_class == "object-cover"
+      echo "w-full h-full aspect-video max-w-full"
+    else
+      echo "w-full max-w-full aspect-video"
+    endif
+  endcapture
+%}
+
+<div 
+  class="
+    overflow-hidden w-full flex
+    {{ container_classes }}
+  ">
+  <div class="flex items-center w-full h-full">
+    <div class="flex items-center w-full h-full">
+      {{ media | 
+        external_video_url: loop: '1', muted: '1', color: 'white' | 
+        external_video_tag: class: video_class }}
+    </div>
+  </div>
+</div>
+
+{% comment %} Badge {% endcomment %}
+<div class="absolute z-10 pointer-events-none top-2 left-2">
+  {% capture badge_content %}
+    {% render 'component__icon', icon: 'play', size: '16' %}
+  {% endcapture %}
+  {% render 'component__badge', 
+    background: 'shade-3',
+    text: 'text',
+    border: 'transparent',
+    icon: '',
+    content: badge_content 
+  %}
+</div>

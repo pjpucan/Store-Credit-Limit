@@ -1,0 +1,53 @@
+<!-- snippets/script__localization.liquid -->
+{% comment %} 
+  This script is responsible for handling the localization form in the Shopify theme. It listens for the DOMContentLoaded event and then creates a new custom element 'localization-form'. This custom element has an input and a button, and it listens for click events on elements with the classes '.js-countrySelection' and '.js-languageSelection'. When a click event is detected, it prevents the default action, updates the input value with the clicked element's data-value attribute, and submits the form if it exists.
+
+  Usage:
+  {% render 'script__localization' %}
+
+  Recommendations:
+  - Enable language and currency switcher in theme settings.
+  - Render this snippet inside theme__localization-overlay.liquid
+
+  Possible enhancements: 
+  - Rewrite with Alpine inside of theme__localization-overlay.liquid
+{% endcomment %}
+
+{% if settings.enable_region or settings.enable_language %}
+
+  <script type="module">
+    document.addEventListener('DOMContentLoaded', () => {
+
+      class LocalizationForm extends HTMLElement {
+
+        constructor() {
+          super();
+
+          // Define elements that will be used in this class
+          this.elements = {
+            input: this.querySelector('input[name="language_code"], input[name="country_code"]'),
+            button: this.querySelector('button'),
+          };
+
+          // Add click event listeners to all selectors
+          this.querySelectorAll('.js-countrySelection').forEach(item => item.addEventListener('click', this.onItemClick.bind(this)));
+          this.querySelectorAll('.js-languageSelection').forEach(item => item.addEventListener('click', this.onItemClick.bind(this)));
+        }
+      
+        // Function to handle click events
+        onItemClick(event) {
+          event.preventDefault(); 
+          const form = this.querySelector('form');
+          this.elements.input.value = event.currentTarget.dataset.value; 
+          if (form) form.submit();
+        }
+
+      }
+      
+      // Register the new custom element 'localization-form' with the browser
+      customElements.define('localization-form', LocalizationForm);
+
+    });
+  </script>
+  
+{% endif %}

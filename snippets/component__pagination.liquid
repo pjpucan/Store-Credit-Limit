@@ -1,0 +1,154 @@
+<!-- snippets/component__pagination.liquid -->
+{% comment %} 
+  This component is used to navigate through multiple pages of content. It supports three types of pagination: scroll, load, and pages.
+  
+  Accepts:
+  - paginate: {Object} Liquid object with pagination values. 
+  
+  Globals:
+  - pagination_type: {string} Determines the type of pagination. It can be 'scroll', 'load', or 'pages'.
+  - layout_horizontal: {string} Determines the horizontal margin.
+
+  Usage:
+    {% render 'component__pagination', 
+      paginate: paginate 
+    %}
+
+  Recommendations:
+  - This component is best used inside a pagination object. For example, it can be used in a loop of products on a collection template to navigate through the pages of products.
+  - The 'scroll' type is recommended for infinite scrolling, 'load' type for loading more content on button click, and 'pages' type for traditional numbered pages.
+{% endcomment %}
+
+{% if paginate.pages > 1 %}
+  
+  {% if settings.pagination_type == 'scroll' %}
+    <section 
+      class="
+        border--t-width py-4 type--small
+        {{ section.settings.color_border }}
+        {% if section.settings.enable_margin %}
+          {{ settings.x_margin }}
+        {% endif %}
+      " 
+      x-init="pagination_total_pages = {{ paginate.pages }};">
+      <div class="text-center">
+        <span>{{ 'labels.showing_pages' | t }}</span>
+        <span x-text="pagination_current_page">1</span>
+        {{ 'labels.of' | t | downcase }}
+        <span x-text="pagination_total_pages">{{ paginate.pages }}</span>
+      </div>
+      <div 
+        class="mt-2 text-center" 
+        x-intersect.full="fetchAndRenderNextPage()" 
+        x-show="pagination_current_page < pagination_total_pages" 
+        x-cloak>
+        <button class="btn btn--small btn--load btn--plain btn--loading" 
+          role="button"
+          title="{{ 'labels.loading_more' | t }}">
+          <div class="btn__content">{{ 'labels.loading_more' | t }}</div>
+          <div class="btn__spinner">{% render 'component__icon', icon: 'spinner', size: '16', class: '' %}</div>
+        </button>
+      </div>
+    </section>
+  {% endif %}
+
+  {% if settings.pagination_type == 'load' %}
+    <section 
+      class="
+        border--t-width py-4 type--small
+        {{ section.settings.color_border }}
+        {% if section.settings.enable_margin %}
+          {{ settings.x_margin }}
+        {% endif %}
+      " 
+      x-data="{ button_loading: false }" 
+      x-init="pagination_total_pages = {{ paginate.pages }};">
+      <div class="text-center">
+        <span>{{ 'labels.showing_pages' | t }}</span>
+        <span x-text="pagination_current_page">1</span>
+        {{ 'labels.of' | t | downcase }}
+        <span x-text="pagination_total_pages">{{ paginate.pages }}</span>
+      </div>
+      <div class="mt-2 text-center" x-show="pagination_current_page < pagination_total_pages" x-cloak>
+        <button 
+          class="btn btn--small btn--load btn--secondary"
+          :class="{ 'btn--loading' : button_loading }"
+          :disabled="button_loading"
+          role="button"
+          title="{{ 'actions.load_more' | t }}"
+          @click="fetchAndRenderNextPage(); button_loading = true; setTimeout(function(){ button_loading = false}, 1000);">
+          <div class="btn__content">{{ 'actions.load_more' | t }}</div>
+          <div class="btn__spinner">{% render 'component__icon', icon: 'spinner', size: '16', class: '' %}</div>
+        </button>
+      </div>
+    </section>
+  {% endif %}
+
+  {% if settings.pagination_type == 'pages' %}
+    <section 
+      class="
+        border--t-width py-4 type--small gap-2 flex flex-col
+        {{ section.settings.color_border }}
+        {% if section.settings.enable_margin %}
+          {{ settings.x_margin }}
+        {% endif %}
+      " 
+      x-init="pagination_total_pages = {{ paginate.pages }};">
+      <div class="text-center">
+        <span>{{ 'labels.showing_pages' | t }}</span>
+        <span>{{ paginate.current_page }}</span>
+        {{ 'labels.of' | t | downcase }}
+        <span x-text="pagination_total_pages">{{ paginate.pages }}</span>
+      </div>
+      <div class="flex items-center justify-center gap-2 text-center">
+        {% if paginate.previous.is_link %}
+          <a 
+            class="btn btn--secondary btn--small" 
+            href="{{ paginate.previous.url }}"
+            title="{{ paginate.previous.title }}">
+            {% render 'component__icon', icon: 'chevron-left', size: '20', class: '' %}
+          </a>
+        {% endif %}
+        {% if paginate.pages > 1 %}
+          {% for part in paginate.parts %}
+            {% if part.is_link %}
+              <a 
+                class="btn btn--plain btn--small"
+                href="{{ part.url }}"> {{ part.title }}</a>
+            {% else %}
+              {% if part.title == '&hellip;' %}
+                <a 
+                  class="btn btn--plain btn--small" 
+                  href="#" 
+                  onclick="return false;">{{ part.title }}</a>
+              {% else %}
+                <a 
+                  class="opacity-50 btn btn--plain btn--small" 
+                  href="{{ part.url }}"> {{ part.title }}</a>
+              {% endif %}
+            {% endif %}
+          {% endfor %}     
+
+        {% endif %}
+        {% if paginate.next.is_link %}
+          <a 
+            class="btn btn--secondary btn--small" 
+            href="{{ paginate.next.url }}"
+            title="{{ paginate.next.title }}">
+            {% render 'component__icon', icon: 'chevron-right', size: '20', class: '' %}
+          </a>
+        {% endif %}
+      </div>
+    </section>
+  {% endif %}
+
+{% endif %}
+
+<script type="module">
+  window.__initialData = window.__initialData || {};
+  Object.assign(window.__initialData, {
+    pagination_total_pages: {{ paginate.pages | default: 1 }},
+    pagination_current_page: {{ paginate.current_page | default: 1 }},
+    pagination_section: "{{ section.id }}"
+  });
+</script>

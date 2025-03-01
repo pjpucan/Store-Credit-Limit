@@ -1,0 +1,1011 @@
+{
+  "sections": {
+    "pagefly-home": {
+      "type": "pagefly-home",
+      "settings": {}
+    },
+    "banner_iGWjdj": {
+      "type": "banner",
+      "disabled": true,
+      "settings": {
+        "url": "",
+        "image_background_desktop": "shopify://shop_images/08._Group_02_7b16be89-4f36-4b46-94fc-b59e7424ac90.jpg",
+        "image_background_mobile": "shopify://shop_images/08._Group_034_78e81202-9734-4ba8-908b-f2241fd6dc8b_2.jpg",
+        "show_image": true,
+        "show_video_background_mobile": true,
+        "layout_y_spacing": "banner--h-xl",
+        "color_scheme": "color__bg-overlay-1 color__text",
+        "color_text": "color__light",
+        "color_border": "color__border-divider-1",
+        "enable_gradient": false,
+        "enable_background_overlay": false,
+        "style_border": "",
+        "layout_y_alignment": "items-center",
+        "layout_x_alignment": "justify-center text-center",
+        "enable_header_overlap": false,
+        "enable_margin": true,
+        "enable_border_margin": false,
+        "enable_max_width": true,
+        "visibility": ""
+      }
+    },
+    "marquee_iwg96E": {
+      "type": "marquee",
+      "blocks": {
+        "heading_RAkwdp": {
+          "type": "heading",
+          "settings": {
+            "content": "World’s First Activewear Carbon Capture Technology"
+          }
+        },
+        "heading_73YMaq": {
+          "type": "heading",
+          "settings": {
+            "content": "."
+          }
+        },
+        "heading_wDeGqf": {
+          "type": "heading",
+          "settings": {
+            "content": "Ultra premium apparel for the performance athlete"
+          }
+        },
+        "heading_cjpxJw": {
+          "type": "heading",
+          "settings": {
+            "content": "."
+          }
+        }
+      },
+      "block_order": [
+        "heading_RAkwdp",
+        "heading_73YMaq",
+        "heading_wDeGqf",
+        "heading_cjpxJw"
+      ],
+      "disabled": true,
+      "settings": {
+        "spacing_top": 30,
+        "spacing_bottom": 30,
+        "color_scheme": "color__bg-body",
+        "color_background": "#ffffff",
+        "color_text": "",
+        "color_border": "color__border-divider-1",
+        "enable_color_fade": false,
+        "enable_fade": false,
+        "style_border": "border--b-width",
+        "enable_margin": false,
+        "use_reverse_animation": false,
+        "animation_speed": 20,
+        "visibility": ""
+      }
+    },
+    "text_kbpVxq": {
+      "type": "text",
+      "disabled": true,
+      "settings": {
+        "heading": "Our Ikigai",
+        "content": "<p>Driven by the Ikigai of empowering the inner Alpha, ZODA fuels the indomitable spirit that creates true champions.</p>",
+        "button_label": "Shop Now",
+        "button_url": "shopify://collections/all",
+        "spacing_top": 100,
+        "spacing_bottom": 100,
+        "color_scheme": "custom",
+        "color_background": "#55cda1",
+        "color_text": "",
+        "color_border": "color__border-divider-1",
+        "color_button": "btn btn--secondary",
+        "enable_color_fade": false,
+        "style_border": "border--b-width",
+        "style_text_alignment": "text-center",
+        "layout_x_alignment": "justify-center",
+        "layout_column_width": 80,
+        "enable_margin": true,
+        "visibility": ""
+      }
+    },
+    "modify_banner_QmBBGP": {
+      "type": "modify-banner",
+      "blocks": {
+        "heading_TqiYYH": {
+          "type": "heading",
+          "settings": {
+            "content": "In it to win  it"
+          }
+        },
+        "content_MCpKVd": {
+          "type": "content",
+          "settings": {
+            "content": "<p>ZODA™ is not confined to just being a brand. It is a mindset, a testament to the unwavering pursuit of personal excellence and the relentless determination to conquer any challenge.</p>"
+          }
+        },
+        "buttons_itc6Re": {
+          "type": "buttons",
+          "settings": {
+            "button_label": "learn more",
+            "button_url": "shopify://collections/all",
+            "color_button": "btn",
+            "secondary_button_label": "",
+            "secondary_button_url": "",
+            "secondary_color_button": "btn btn--neutral",
+            "floating_button_label": "",
+            "floating_button_url": "",
+            "floating_color_button": "btn"
+          }
+        }
+      },
+      "block_order": [
+        "heading_TqiYYH",
+        "content_MCpKVd",
+        "buttons_itc6Re"
+      ],
+      "disabled": true,
+      "settings": {
+        "image_background_desktop": "shopify://shop_images/06.png",
+        "image_background_mobile": "shopify://shop_images/06.png",
+        "layout_y_spacing": "image",
+        "color_scheme": "color__bg-overlay-1 color__text",
+        "color_text": "color__light",
+        "color_border": "color__border-divider-1",
+        "enable_gradient": false,
+        "enable_background_overlay": false,
+        "style_border": "border--b-width",
+        "layout_y_alignment": "items-end",
+        "layout_x_alignment": "justify-start",
+        "enable_header_overlap": true,
+        "enable_margin": true,
+        "enable_border_margin": false,
+        "enable_max_width": true,
+        "visibility": ""
+      }
+    },
+    "text_highlight_WaypWd": {
+      "type": "text-highlight",
+      "blocks": {
+        "content_t3GfkL": {
+          "type": "content",
+          "settings": {
+            "content": "ZODA™ is more than just activewear; it's a symbol of unwavering commitment to excellence, a catalyst for personal transformation, and a beacon of hope for a healthier planet. We invite you to join us on this journey to redefine what's possible in athletic performance and sustainability.",
+            "layout_x_alignment": ""
+          }
+        },
+        "buttons_WULip4": {
+          "type": "buttons",
+          "settings": {
+            "button_label": "More",
+            "button_url": "shopify://collections/all",
+            "color_button": "btn",
+            "secondary_button_label": "",
+            "secondary_button_url": "",
+            "secondary_color_button": "btn btn--neutral"
+          }
+        }
+      },
+      "block_order": [
+        "content_t3GfkL",
+        "buttons_WULip4"
+      ],
+      "disabled": true,
+      "settings": {
+        "spacing_top": 200,
+        "spacing_bottom": 200,
+        "color_scheme": "color__bg-body",
+        "color_background": "#ffffff",
+        "color_text": "",
+        "color_border": "color__border-divider-1",
+        "enable_color_fade": false,
+        "style_border": "",
+        "layout_column_width": 100,
+        "layout_x_alignment": "items-start",
+        "enable_margin": true,
+        "enable_sticky_layout": false,
+        "visibility": ""
+      }
+    },
+    "text_highlight_6rjEqz": {
+      "type": "text-highlight",
+      "blocks": {
+        "heading_ewheat": {
+          "type": "heading",
+          "settings": {
+            "content": "OUR IKIGAI",
+            "layout_x_alignment": "text-center"
+          }
+        },
+        "content_pbnmbU": {
+          "type": "content",
+          "settings": {
+            "content": "Driven by the Ikigai of empowering the inner Alpha, ZODA fuels the indomitable spirit that creates true champions.",
+            "layout_x_alignment": "text-center"
+          }
+        },
+        "content_fWi4qd": {
+          "type": "content",
+          "disabled": true,
+          "settings": {
+            "content": "",
+            "layout_x_alignment": ""
+          }
+        },
+        "buttons_K6HXRB": {
+          "type": "buttons",
+          "settings": {
+            "button_label": "Learn More",
+            "button_url": "",
+            "color_button": "btn btn--plain",
+            "secondary_button_label": "",
+            "secondary_button_url": "",
+            "secondary_color_button": "btn btn--minimal"
+          }
+        }
+      },
+      "block_order": [
+        "heading_ewheat",
+        "content_pbnmbU",
+        "content_fWi4qd",
+        "buttons_K6HXRB"
+      ],
+      "disabled": true,
+      "settings": {
+        "spacing_top": 60,
+        "spacing_bottom": 60,
+        "color_scheme": "custom",
+        "color_background": "#55cda1",
+        "color_text": "color__dark",
+        "color_border": "color__border-divider-1",
+        "enable_color_fade": true,
+        "style_border": "",
+        "layout_column_width": 100,
+        "layout_x_alignment": "items-start",
+        "enable_margin": true,
+        "enable_sticky_layout": false,
+        "visibility": ""
+      }
+    },
+    "product_slider_fUxCHY": {
+      "type": "product-slider",
+      "disabled": true,
+      "settings": {
+        "collection": "new-arrivals",
+        "products_count": 7,
+        "heading": "NEW ARRIVALS",
+        "content": "",
+        "button_label": "Shop",
+        "button_url": "shopify://collections/all",
+        "spacing_top": 60,
+        "spacing_bottom": 60,
+        "color_scheme": "color__bg-body",
+        "color_background": "#ffffff",
+        "color_text": "",
+        "color_border": "color__border-divider-1",
+        "color_button": "btn btn--tertiary",
+        "enable_color_fade": false,
+        "style_border": "",
+        "layout_x_alignment": "text-center justify-center flex-col items-center",
+        "enable_margin": true,
+        "enable_split": false,
+        "visibility": ""
+      }
+    },
+    "banner_djY7jf": {
+      "type": "banner",
+      "blocks": {
+        "heading_xLxjdP": {
+          "type": "heading",
+          "settings": {
+            "content": "ASCEND. CONQUER. ASCEND"
+          }
+        },
+        "content_feQprW": {
+          "type": "content",
+          "settings": {
+            "content": "<p>We believe in the relentless pursuit of personal bests, the unwavering determination to conquer challenges and the unyielding spirit that fuels true champions.</p><p>We will do it with utmost integrity, innovation and inclusivity.</p><p>Let’s reach new milestones everyday and set new targets everyday.</p>"
+          }
+        }
+      },
+      "block_order": [
+        "heading_xLxjdP",
+        "content_feQprW"
+      ],
+      "disabled": true,
+      "settings": {
+        "url": "",
+        "image_background_desktop": "shopify://shop_images/banner2.png",
+        "image_background_mobile": "shopify://shop_images/banner2-mob.jpg",
+        "show_image": true,
+        "show_video_background_mobile": false,
+        "layout_y_spacing": "image",
+        "color_scheme": "color__bg-overlay-1 color__text",
+        "color_text": "color__light",
+        "color_border": "color__border-divider-1",
+        "enable_gradient": false,
+        "enable_background_overlay": false,
+        "style_border": "border--b-width",
+        "layout_y_alignment": "items-end",
+        "layout_x_alignment": "justify-start",
+        "enable_header_overlap": false,
+        "enable_margin": true,
+        "enable_border_margin": false,
+        "enable_max_width": true,
+        "visibility": ""
+      }
+    },
+    "slideshow_Mp8mgd": {
+      "type": "slideshow",
+      "blocks": {
+        "content_tyTnNV": {
+          "type": "content",
+          "settings": {
+            "heading": "ASCEND. CONQUER. ASCEND",
+            "content": "<p>We believe in the relentless pursuit of personal bests, the unwavering determination to conquer challenges and the unyielding spirit that fuels true champions.</p><p>We will do it with utmost integrity, innovation and inclusivity.</p>",
+            "url": "",
+            "image_background_desktop": "shopify://shop_images/08._Group_01.jpg",
+            "image_background_mobile": "shopify://shop_images/08._Group_01_-_Copy.jpg",
+            "show_entire_image": false,
+            "show_video_background_mobile": false,
+            "button_label": "",
+            "button_url": "",
+            "color_button": "btn",
+            "secondary_button_label": "",
+            "secondary_button_url": "",
+            "secondary_color_button": "btn btn--neutral",
+            "color_scheme": "color__bg-secondary color__secondary",
+            "color_text": "",
+            "enable_gradient": false,
+            "enable_background_overlay": false,
+            "layout_y_alignment": "items-center",
+            "layout_x_alignment": "justify-center text-center"
+          }
+        }
+      },
+      "block_order": [
+        "content_tyTnNV"
+      ],
+      "disabled": true,
+      "settings": {
+        "auto_scroll_delay": 0,
+        "layout_y_spacing": "min-h-[90vh] md:min-h-[calc(90vh-100px)]",
+        "color_border": "color__border-divider-1",
+        "style_border": "",
+        "enable_header_overlap": false,
+        "enable_margin": true,
+        "enable_border_margin": false,
+        "enable_max_width": true,
+        "visibility": ""
+      }
+    },
+    "content_grid_jjjwUh": {
+      "type": "content-grid",
+      "blocks": {
+        "content_HtrCJE": {
+          "type": "content",
+          "settings": {
+            "heading": "TECHNOLOGY",
+            "content": "",
+            "button_label": "MORE",
+            "url": "shopify://pages/technology",
+            "image_background": "shopify://shop_images/07._Zoda_Black_Shorts_01_023e8da3-3c6b-4d97-b3be-6c91b731ea19.jpg",
+            "enable_autoplay": true,
+            "enable_mute_toggle": true,
+            "enable_loop": true,
+            "spacing_minimum_height": 500,
+            "enable_padding": true,
+            "color_scheme": "color__bg-body color__text",
+            "color_border": "",
+            "color_text": "color__light",
+            "color_button": "btn--small btn--tertiary",
+            "enable_gradient": true,
+            "layout_y_alignment": "justify-end",
+            "layout_x_alignment": "center",
+            "layout_row_span": "row-span-1",
+            "layout_col_span": "col-span-1 md:col-span-1"
+          }
+        },
+        "content_XQVy9V": {
+          "type": "content",
+          "settings": {
+            "heading": "SUSTAINABILITY",
+            "content": "",
+            "button_label": "MORE",
+            "url": "shopify://pages/sustainability",
+            "image_background": "shopify://shop_images/Screenshot_2024-11-14_at_1.17.18_PM.png",
+            "enable_autoplay": true,
+            "enable_mute_toggle": true,
+            "enable_loop": true,
+            "spacing_minimum_height": 300,
+            "enable_padding": true,
+            "color_scheme": "color__bg-body color__text",
+            "color_border": "",
+            "color_text": "color__light",
+            "color_button": "btn--small btn--tertiary",
+            "enable_gradient": true,
+            "layout_y_alignment": "justify-end",
+            "layout_x_alignment": "center",
+            "layout_row_span": "row-span-1",
+            "layout_col_span": "col-span-1 md:col-span-1"
+          }
+        },
+        "content_EVQtnY": {
+          "type": "content",
+          "settings": {
+            "heading": "COMMUNITY",
+            "content": "",
+            "button_label": "MORE",
+            "url": "shopify://pages/community",
+            "image_background": "shopify://shop_images/08._Group_03_994e57c6-3b8e-4579-ab21-e93dda62917b.jpg",
+            "enable_autoplay": true,
+            "enable_mute_toggle": true,
+            "enable_loop": true,
+            "spacing_minimum_height": 500,
+            "enable_padding": true,
+            "color_scheme": "color__bg-body color__text",
+            "color_border": "",
+            "color_text": "color__light",
+            "color_button": "btn--small btn--tertiary",
+            "enable_gradient": true,
+            "layout_y_alignment": "justify-end",
+            "layout_x_alignment": "center",
+            "layout_row_span": "row-span-1",
+            "layout_col_span": "col-span-1 md:col-span-1"
+          }
+        }
+      },
+      "block_order": [
+        "content_HtrCJE",
+        "content_XQVy9V",
+        "content_EVQtnY"
+      ],
+      "disabled": true,
+      "settings": {
+        "heading": "",
+        "content": "",
+        "button_label": "",
+        "button_url": "",
+        "spacing_top": 80,
+        "spacing_bottom": 80,
+        "color_scheme": "custom",
+        "color_background": "#ececec",
+        "color_text": "",
+        "color_border": "color__border-divider-1",
+        "color_button": "btn btn--outline",
+        "enable_color_fade": false,
+        "style_border": "",
+        "layout_row_desktop": 3,
+        "layout_row_mobile": 1,
+        "layout_x_alignment": "text-center justify-center flex-col items-center",
+        "enable_margin": false,
+        "enable_split": false,
+        "visibility": ""
+      }
+    },
+    "article_grid_AqpUxA": {
+      "type": "article-grid",
+      "disabled": true,
+      "settings": {
+        "blog": "news",
+        "items_count": 4,
+        "heading": "OUR ZODA WARRIORS",
+        "content": "<p>Learn more about our athletes.</p>",
+        "button_label": "CLICK HERE",
+        "button_url": "shopify://pages/zoda-warriors",
+        "spacing_top": 100,
+        "spacing_bottom": 100,
+        "color_scheme": "custom",
+        "color_background": "#ffffff",
+        "image_background": "shopify://shop_images/background1.png",
+        "head_color_text": "head_color__light",
+        "color_text": "",
+        "color_border": "color__border-divider-1",
+        "color_button": "btn btn--secondary",
+        "enable_color_fade": false,
+        "style_border": "",
+        "layout_row_desktop": 4,
+        "layout_row_mobile": 1,
+        "layout_x_alignment": "justify-between",
+        "enable_margin": true,
+        "enable_split": false,
+        "visibility": ""
+      }
+    },
+    "17238050530a9c9a8a": {
+      "type": "apps",
+      "blocks": {
+        "instafeed_app_block_giCPtp": {
+          "type": "shopify://apps/instafeed/blocks/app-block/c447db20-095d-4a10-9725-b5977662c9d5",
+          "settings": {
+            "title": "",
+            "title_color": "",
+            "alignment": "center",
+            "background_color": "",
+            "feed_id": "",
+            "html_area": ""
+          }
+        }
+      },
+      "block_order": [
+        "instafeed_app_block_giCPtp"
+      ],
+      "disabled": true,
+      "settings": {
+        "spacing_top": 70,
+        "spacing_bottom": 70,
+        "color_scheme": "custom",
+        "color_background": "#f0f0f0",
+        "color_text": "",
+        "color_border": "color__border-divider-1",
+        "enable_color_fade": false,
+        "style_border": "border--b-width",
+        "enable_margin": true
+      }
+    },
+    "collection_grid_xVeqLA": {
+      "type": "collection-grid",
+      "blocks": {
+        "content_axfHEr": {
+          "type": "content",
+          "settings": {
+            "heading": "",
+            "content": "",
+            "button_label": "",
+            "url": "",
+            "image": "shopify://shop_images/col-1.png",
+            "enable_autoplay": true,
+            "enable_mute_toggle": true,
+            "enable_loop": true,
+            "spacing_minimum_height": 250,
+            "enable_padding": true,
+            "color_scheme": "color__bg-body color__text",
+            "color_border": "",
+            "color_text": "color__text",
+            "color_button": "btn--small btn--plain",
+            "enable_gradient": false,
+            "layout_y_alignment": "justify-end",
+            "layout_x_alignment": "left",
+            "layout_row_span": "row-span-1",
+            "layout_col_span": "col-span-1 md:col-span-1"
+          }
+        },
+        "content_xWc6RK": {
+          "type": "content",
+          "settings": {
+            "heading": "",
+            "content": "",
+            "button_label": "",
+            "url": "",
+            "image": "shopify://shop_images/col-2.png",
+            "enable_autoplay": true,
+            "enable_mute_toggle": true,
+            "enable_loop": true,
+            "spacing_minimum_height": 250,
+            "enable_padding": true,
+            "color_scheme": "color__bg-body color__text",
+            "color_border": "",
+            "color_text": "color__text",
+            "color_button": "btn--small btn--plain",
+            "enable_gradient": false,
+            "layout_y_alignment": "justify-end",
+            "layout_x_alignment": "left",
+            "layout_row_span": "row-span-1",
+            "layout_col_span": "col-span-1 md:col-span-1"
+          }
+        },
+        "content_X6Q8pC": {
+          "type": "content",
+          "settings": {
+            "heading": "",
+            "content": "",
+            "button_label": "",
+            "url": "",
+            "image": "shopify://shop_images/col-3.png",
+            "enable_autoplay": true,
+            "enable_mute_toggle": true,
+            "enable_loop": true,
+            "spacing_minimum_height": 250,
+            "enable_padding": true,
+            "color_scheme": "color__bg-body color__text",
+            "color_border": "",
+            "color_text": "color__text",
+            "color_button": "btn--small btn--plain",
+            "enable_gradient": false,
+            "layout_y_alignment": "justify-end",
+            "layout_x_alignment": "left",
+            "layout_row_span": "row-span-1",
+            "layout_col_span": "col-span-1 md:col-span-1"
+          }
+        },
+        "content_AXCJde": {
+          "type": "content",
+          "settings": {
+            "heading": "",
+            "content": "",
+            "button_label": "",
+            "url": "",
+            "image": "shopify://shop_images/col-4.png",
+            "enable_autoplay": true,
+            "enable_mute_toggle": true,
+            "enable_loop": true,
+            "spacing_minimum_height": 250,
+            "enable_padding": true,
+            "color_scheme": "color__bg-body color__text",
+            "color_border": "",
+            "color_text": "color__text",
+            "color_button": "btn--small btn--plain",
+            "enable_gradient": false,
+            "layout_y_alignment": "justify-end",
+            "layout_x_alignment": "left",
+            "layout_row_span": "row-span-1",
+            "layout_col_span": "col-span-1 md:col-span-1"
+          }
+        }
+      },
+      "block_order": [
+        "content_axfHEr",
+        "content_xWc6RK",
+        "content_X6Q8pC",
+        "content_AXCJde"
+      ],
+      "disabled": true,
+      "settings": {
+        "heading": "WHAT ABOUT ZODA",
+        "content": "<p>Ascend together with us.</p>",
+        "button_label": "SEE ALL",
+        "button_url": "shopify://pages/about-zoda",
+        "spacing_top": 100,
+        "spacing_bottom": 100,
+        "color_scheme": "custom",
+        "color_background": "#ececec",
+        "head_color_text": "color__text",
+        "color_text": "",
+        "color_border": "color__border-divider-1",
+        "color_button": "btn",
+        "enable_color_fade": false,
+        "style_border": "",
+        "layout_row_desktop": 4,
+        "layout_row_mobile": 1,
+        "layout_x_alignment": "justify-between",
+        "enable_margin": true,
+        "enable_split": false,
+        "visibility": ""
+      }
+    },
+    "content_grid_wdjJem": {
+      "type": "content-grid",
+      "blocks": {
+        "content_GtRtTW": {
+          "type": "content",
+          "settings": {
+            "heading": "Din Tahir",
+            "content": "",
+            "button_label": "More",
+            "url": "shopify://collections/all",
+            "image": "shopify://shop_images/IMG-20240904-WA0034_-_Copy.jpg",
+            "enable_autoplay": true,
+            "enable_mute_toggle": true,
+            "enable_loop": true,
+            "spacing_minimum_height": 250,
+            "enable_padding": true,
+            "color_scheme": "color__bg-transparent",
+            "color_border": "outline--width color__outline-divider-1",
+            "color_text": "color__text",
+            "color_button": "btn--small btn--tertiary",
+            "enable_gradient": false,
+            "layout_y_alignment": "justify-end",
+            "layout_x_alignment": "left",
+            "layout_row_span": "row-span-1",
+            "layout_col_span": "col-span-1 md:col-span-1"
+          }
+        },
+        "content_XbM4yX": {
+          "type": "content",
+          "settings": {
+            "heading": "Dan Zikri",
+            "content": "",
+            "button_label": "More",
+            "url": "shopify://collections/all",
+            "image": "shopify://shop_images/IMG-20240902-WA0062_-_Copy.jpg",
+            "enable_autoplay": true,
+            "enable_mute_toggle": true,
+            "enable_loop": true,
+            "spacing_minimum_height": 250,
+            "enable_padding": true,
+            "color_scheme": "color__bg-transparent",
+            "color_border": "outline--width color__outline-divider-1",
+            "color_text": "color__text",
+            "color_button": "btn--small btn--tertiary",
+            "enable_gradient": false,
+            "layout_y_alignment": "justify-center",
+            "layout_x_alignment": "left",
+            "layout_row_span": "row-span-1",
+            "layout_col_span": "col-span-1 md:col-span-1"
+          }
+        },
+        "content_nKrRWA": {
+          "type": "content",
+          "settings": {
+            "heading": "LEE JIAHUI",
+            "content": "",
+            "button_label": "More",
+            "url": "shopify://collections/all",
+            "image": "shopify://shop_images/IMG_3933.jpg",
+            "enable_autoplay": true,
+            "enable_mute_toggle": true,
+            "enable_loop": true,
+            "spacing_minimum_height": 250,
+            "enable_padding": true,
+            "color_scheme": "color__bg-transparent",
+            "color_border": "outline--width color__outline-divider-1",
+            "color_text": "color__text",
+            "color_button": "btn--small btn--tertiary",
+            "enable_gradient": false,
+            "layout_y_alignment": "justify-center",
+            "layout_x_alignment": "left",
+            "layout_row_span": "row-span-1",
+            "layout_col_span": "col-span-1 md:col-span-1"
+          }
+        }
+      },
+      "block_order": [
+        "content_GtRtTW",
+        "content_XbM4yX",
+        "content_nKrRWA"
+      ],
+      "disabled": true,
+      "settings": {
+        "heading": "OUR ZODA WARRIORS",
+        "content": "<p>Learn more about our warriors.</p>",
+        "button_label": "More",
+        "button_url": "shopify://collections/all",
+        "spacing_top": 50,
+        "spacing_bottom": 50,
+        "color_scheme": "color__bg-secondary",
+        "color_background": "#ffffff",
+        "color_text": "color__light",
+        "color_border": "color__border-divider-1",
+        "color_button": "btn",
+        "enable_color_fade": false,
+        "style_border": "border--b-width",
+        "layout_row_desktop": 3,
+        "layout_row_mobile": 1,
+        "layout_x_alignment": "justify-between",
+        "enable_margin": true,
+        "enable_split": false,
+        "visibility": ""
+      }
+    },
+    "17235206913b4bfef5": {
+      "type": "apps",
+      "blocks": {
+        "instafeed_app_block_HY7fxw": {
+          "type": "shopify://apps/instafeed/blocks/app-block/c447db20-095d-4a10-9725-b5977662c9d5",
+          "settings": {
+            "title": "The ZODA Warriors™ Tribe",
+            "title_color": "",
+            "alignment": "left",
+            "background_color": "",
+            "feed_id": "",
+            "html_area": ""
+          }
+        }
+      },
+      "block_order": [
+        "instafeed_app_block_HY7fxw"
+      ],
+      "disabled": true,
+      "settings": {
+        "spacing_top": 0,
+        "spacing_bottom": 0,
+        "color_scheme": "color__bg-body",
+        "color_background": "#ffffff",
+        "color_text": "",
+        "color_border": "color__border-divider-1",
+        "enable_color_fade": false,
+        "style_border": "",
+        "enable_margin": true
+      }
+    },
+    "our_partners_tLQqDY": {
+      "type": "our-partners",
+      "blocks": {
+        "content_8hNyxQ": {
+          "type": "content",
+          "settings": {
+            "heading": "COzTERRA",
+            "content": "",
+            "button_label": "",
+            "url": "https://cozterra.com/",
+            "link_blank": true,
+            "image": "shopify://shop_images/cozterra-logo.webp",
+            "spacing_minimum_height": 200,
+            "enable_padding": true,
+            "color_scheme": "color__bg-overlay-3 color__text",
+            "color_border": "",
+            "color_text": "color__light",
+            "color_button": "btn--small btn--plain",
+            "enable_gradient": false,
+            "layout_y_alignment": "justify-center",
+            "layout_x_alignment": "left",
+            "layout_row_span": "row-span-1",
+            "layout_col_span": "col-span-1 md:col-span-1"
+          }
+        },
+        "content_qQUAGi": {
+          "type": "content",
+          "settings": {
+            "heading": "FWE",
+            "content": "",
+            "button_label": "",
+            "url": "https://fwe.asia/",
+            "link_blank": true,
+            "image": "shopify://shop_images/fwe-logo.webp",
+            "spacing_minimum_height": 200,
+            "enable_padding": true,
+            "color_scheme": "color__bg-overlay-3 color__text",
+            "color_border": "",
+            "color_text": "color__light",
+            "color_button": "btn--small btn--plain",
+            "enable_gradient": false,
+            "layout_y_alignment": "justify-center",
+            "layout_x_alignment": "left",
+            "layout_row_span": "row-span-1",
+            "layout_col_span": "col-span-1 md:col-span-1"
+          }
+        },
+        "content_WVAtHr": {
+          "type": "content",
+          "settings": {
+            "heading": "BFT Pasir Ris Central",
+            "content": "",
+            "button_label": "",
+            "url": "https://www.bodyfittraining.au/club/pasir-ris-central",
+            "link_blank": true,
+            "image": "shopify://shop_images/bft-logo.webp",
+            "spacing_minimum_height": 200,
+            "enable_padding": true,
+            "color_scheme": "color__bg-overlay-3 color__text",
+            "color_border": "",
+            "color_text": "color__light",
+            "color_button": "btn--small btn--plain",
+            "enable_gradient": false,
+            "layout_y_alignment": "justify-center",
+            "layout_x_alignment": "left",
+            "layout_row_span": "row-span-1",
+            "layout_col_span": "col-span-1 md:col-span-1"
+          }
+        }
+      },
+      "block_order": [
+        "content_8hNyxQ",
+        "content_qQUAGi",
+        "content_WVAtHr"
+      ],
+      "disabled": true,
+      "settings": {
+        "heading": "",
+        "content": "<h4>KEY PARTNERS</h4>",
+        "button_label": "",
+        "button_url": "",
+        "spacing_top": 100,
+        "spacing_bottom": 100,
+        "color_scheme": "color__bg-tertiary",
+        "color_background": "#ececec",
+        "head_color_text": "color__text",
+        "color_text": "",
+        "color_border": "color__border-divider-1",
+        "color_button": "btn btn--secondary",
+        "enable_color_fade": true,
+        "style_border": "",
+        "layout_row_desktop": 3,
+        "layout_row_mobile": 1,
+        "layout_x_alignment": "text-center justify-center flex-col items-center",
+        "enable_margin": true,
+        "enable_split": false,
+        "visibility": ""
+      }
+    },
+    "marquee_KtHxdM": {
+      "type": "marquee",
+      "blocks": {
+        "image_pNazqA": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/partner-logo1.png",
+            "image_height": 100
+          }
+        },
+        "image_D4VifJ": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/fwe-logo.webp",
+            "image_height": 100
+          }
+        },
+        "image_6ndMBP": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/partner-logo3.png",
+            "image_height": 100
+          }
+        }
+      },
+      "block_order": [
+        "image_pNazqA",
+        "image_D4VifJ",
+        "image_6ndMBP"
+      ],
+      "disabled": true,
+      "settings": {
+        "spacing_top": 100,
+        "spacing_bottom": 100,
+        "color_scheme": "color__bg-body",
+        "color_background": "#ffffff",
+        "color_text": "",
+        "color_border": "color__border-divider-1",
+        "enable_color_fade": false,
+        "enable_fade": false,
+        "style_border": "border--b-width",
+        "enable_margin": false,
+        "use_reverse_animation": false,
+        "animation_speed": 15,
+        "visibility": ""
+      }
+    },
+    "newsletter_JN7zf7": {
+      "type": "newsletter",
+      "blocks": {
+        "newsletter_bVQYw3": {
+          "type": "newsletter",
+          "settings": {
+            "heading": "BECOME A ZODA WARRIOR",
+            "content": "<p>Enter your email to receive a welcome code and the latest news!</p>",
+            "button_label": "Subscribe",
+            "disclaimer": "",
+            "success": "<p>Success! You’ve been subscribed.</p>",
+            "layout_width_desktop": 12,
+            "layout_width_mobile": 12,
+            "layout_x_alignment": "justify-between"
+          }
+        }
+      },
+      "block_order": [
+        "newsletter_bVQYw3"
+      ],
+      "disabled": true,
+      "settings": {
+        "spacing_top": 10,
+        "spacing_bottom": 10,
+        "color_scheme": "color__bg-secondary",
+        "color_background": "#1e201c",
+        "color_text": "color__light",
+        "color_border": "color__border-divider-1",
+        "color_button": "btn btn--plain",
+        "enable_color_fade": false,
+        "style_border": "border--b-width",
+        "layout_y_alignment": "items-start",
+        "layout_x_alignment": "justify-start",
+        "enable_margin": true,
+        "visibility": ""
+      }
+    }
+  },
+  "order": [
+    "pagefly-home",
+    "banner_iGWjdj",
+    "marquee_iwg96E",
+    "text_kbpVxq",
+    "modify_banner_QmBBGP",
+    "text_highlight_WaypWd",
+    "text_highlight_6rjEqz",
+    "product_slider_fUxCHY",
+    "banner_djY7jf",
+    "slideshow_Mp8mgd",
+    "content_grid_jjjwUh",
+    "article_grid_AqpUxA",
+    "17238050530a9c9a8a",
+    "collection_grid_xVeqLA",
+    "content_grid_wdjJem",
+    "17235206913b4bfef5",
+    "our_partners_tLQqDY",
+    "marquee_KtHxdM",
+    "newsletter_JN7zf7"
+  ]
+}

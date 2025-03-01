@@ -1,0 +1,33 @@
+<!-- snippets/theme__audio-overlay.liquid -->
+{% comment %} 
+  This file is responsible for creating a overlay overlay that allows users to enable or disable audio.
+  
+  Globals:
+  - enable_audio: {boolean} Indicates if audio is enabled or not.
+  
+  Usage:
+    {% render 'theme__audio-overlay' %}
+{% endcomment %}
+
+{% if settings.enable_audio %}
+  {% capture popup_content %}
+    <button class="block w-full p-4 text-left no-underline type__nav border--b-width color__border-divider-1 hover:color__bg-overlay-1"
+      @click.prevent="enable_audio = true">
+      <span x-show="enable_audio == true">
+        {% render 'component__icon', icon: 'check', size: '16', class: 'mr-1' %}
+      </span>
+      {{ 'actions.enable_audio' | t }}
+    </button>
+    <button class="block w-full p-4 text-left no-underline type__nav hover:color__bg-overlay-1"
+      @click.prevent="enable_audio = false">
+      <span x-show="enable_audio == false">
+        {% render 'component__icon', icon: 'check', size: '16', class: 'mr-1' %}
+      </span>
+      {{ 'actions.disable_audio' | t }}
+    </button>
+  {% endcapture %}
+  {% render 'component__popup', 
+    popup_id: 'audio_overlay',
+    content: popup_content 
+  %}
+{% endif %}

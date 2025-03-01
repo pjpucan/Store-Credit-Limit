@@ -1,0 +1,1214 @@
+<!-- sections/theme__footer.liquid -->
+{% comment %}
+This file is responsible for the site-wide footer. It includes various settings and options for customization.
+
+Globals:
+- layout_horizontal: {string} Class string to set horizontal margin.
+- enable_animations: {boolean} Indicates if animations should be enabled.
+- enable_region: {boolean} Indicates if the region selector should be enabled/disabled.
+- enable_language: {boolean} Indicates if the language selector should be enabled/disabled.
+- enable_audio: {boolean} Indicates if audio is enabled.
+- type_seperator: {string} Setting to pick the type of separator between text.
+- social_tiktok_link: {string} URL for TikTok profile.
+- social_instagram_link: {string} URL for Instagram profile.
+- social_twitter_link: {string} URL for Twitter profile.
+- social_facebook_link: {string} URL for Facebook profile.
+- social_pinterest_link: {string} URL for Pinterest profile.
+- social_snapchat_link: {string} URL for Snapchat profile.
+- social_tumblr_link: {string} URL for Tumblr profile.
+- social_discord_link: {string} URL for Discord profile.
+- social_linkedin_link: {string} URL for LinkedIn profile.
+- social_twitch_link: {string} URL for Twitch profile.
+- social_youtube_link: {string} URL for YouTube profile.
+- social_vimeo_link: {string} URL for Vimeo profile.
+{% endcomment %}
+
+<footer 
+  id="{{ section.id }}"
+  class="
+    relative z-40
+    {{ section.settings.visibility }}
+  "
+  :class="{
+    '!-z-10' : has_overlay
+  }">
+
+  {% comment %} Mobile {% endcomment %}
+  <div 
+    class="
+      md:hidden border--t-width
+      {{ section.settings.main_color_border }}
+      {{ section.settings.main_color_scheme }}
+    ">
+    {% for block in section.blocks %}
+      {% case block.type %}
+        
+        {% comment %} Newsletter {% endcomment %}
+        {% when 'newsletter' %}
+          {% form 'customer' %}
+            <section class="py-6 md:hidden border--b-width
+              {{ section.settings.main_color_scheme }}
+              {{ section.settings.main_color_border }}">
+              <div 
+                class="
+                  flex flex-col items-start gap-2
+                  {{ settings.x_margin }}
+                ">
+          
+                {% unless block.settings.heading == blank %}
+                  <h3 class="type__heading type__heading-5">
+                    {{ block.settings.heading }}
+                  </h3>
+                {% endunless %}
+          
+                {% if form.errors %}
+                  <div class="p-2 mt-2 color__bg-overlay-1 type--small border--radius">
+                    {{ form.errors | default_errors }}
+                  </div>
+                {% endif %}
+          
+                {% if form.posted_successfully? %}
+                  <div class="space-y-4 type--small">
+                    {{ block.settings.success }}
+                  </div>
+                {% else %}
+                  <div class="space-y-4">
+                    {{ block.settings.content }}
+                  </div>
+                  <label 
+                    class="sr-only"
+                    for="customer_email_footer_mobile">
+                    {{ 'labels.email' | t }}
+                  </label>
+                  <input 
+                    id="customer_email_footer_mobile"
+                    class="flex-grow form-input" 
+                    name="contact[email]"
+                    type="email"
+                    placeholder="{{ 'actions.email_placeholder' | t }}" 
+                    autocorrect="off" 
+                    autocapitalize="off"/>
+                  <button 
+                    class="
+                      whitespace-nowrap btn
+                      {{ section.settings.main_color_button }}
+                    "
+                    type="submit">
+                    <span class="btn__content">{{ block.settings.button }}</span>
+                  </button>
+                  {% unless block.settings.disclaimer == blank %}
+                    <div class="space-y-4 opacity-50 type--smaller">
+                      {{ block.settings.disclaimer }}
+                    </div>
+                  {% endunless %}
+                {% endif %}
+          
+              </div>
+            </section>
+          {% endform %}
+
+        {% comment %} Content {% endcomment %}
+        {% when 'content' %}
+          <div class="py-6 md:hidden border--b-width
+            {{ section.settings.main_color_scheme }}
+            {{ section.settings.main_color_border }}">
+            <div 
+              class="
+                flex flex-col items-start gap-2
+                {{ settings.x_margin }}
+              ">
+
+              {% capture logo_size %}
+                height: {{ block.settings.logo_mobile_height }}px;
+                width: {{ block.settings.logo_mobile_height | times: block.settings.logo.aspect_ratio }}px;
+              {% endcapture %}
+
+              {% if block.settings.logo %}
+                <a class="relative items-center block" 
+                  style="{{ logo_size }}"
+                  href="{{ routes.root_url }}" 
+                  title="{{ shop.name }}">
+                  {{ block.settings.logo
+                  | image_url: width: 400
+                  | image_tag: style: 'object-fit:cover', class: 'w-full h-full !bg-transparent object-contain', alt: block.settings.logo.alt }}
+                </a>
+              {% endif %}
+
+              {% unless block.settings.heading == blank %}
+                <h3 class="type__heading type__heading-5">
+                  {{ block.settings.heading }}
+                </h3>
+              {% endunless %}
+            
+              {% unless block.settings.content == blank %}
+                <div class="space-y-4">
+                  {{ block.settings.content }}
+                </div>
+              {% endunless %}
+
+              {% unless block.settings.button_url == blank %}
+                <a 
+                  class="
+                    btn
+                    {{ section.settings.main_color_button }}
+                  "
+                  href="{{ block.settings.button_url }}">
+                  {{ block.settings.button_label }}
+                </a>
+              {% endunless %}
+        
+            </div>
+          </div>
+
+        {% comment %} Menu {% endcomment %}
+        {% when 'menu' %}
+          <div class="pt-4 md:hidden">
+          
+          {% unless block.settings.menu == blank %}
+            {% capture accordion_content %}
+            <nav 
+              class="
+                md:hidden flex flex-col gap-4 pt-4
+                {{ section.settings.main_color_scheme }}
+              ">
+              {% for link in block.settings.menu.links %}
+                {% if link.levels >= 1 %}
+                  <div 
+                    class="
+                      flex flex-col gap-4 pl-4 border--l-width
+                      {{ section.settings.main_color_border }}
+                      {% if settings.enable_animations %}
+                        motion-safe:scroll-fadein-2-20
+                      {% endif %}
+                    ">
+                    {% for child_link in link.links %}
+                      <a 
+                        class="
+                          flex items-center justify-between w-full pt-4 no-underline type__body
+                          {{ section.settings.main_color_border }}
+                        "
+                        href="{{ child_link.url }}">
+                        {{ child_link.title }}
+                      </a>
+                      {% for grandchild_link in child_link.links %}
+                        <a 
+                          class="
+                            flex items-center justify-between w-full pt-4 no-underline type__body pl-4
+                            {{ section.settings.main_color_border }}
+                          "
+                          href="{{ child_link.url }}">
+                          {{ grandchild_link.title }}
+                        </a>
+                      {% endfor %}
+                    {% endfor %}
+                  </div>
+                {% else %}
+
+                  <a 
+                    class="
+                      flex items-center justify-between w-full px-4 no-underline type__body
+                      {{ section.settings.main_color_border }}
+                    "
+                    href="{{ link.url }}">
+                    {{ link.title }}
+                  </a>
+
+                {% endif %}
+              {% endfor %}
+            </nav>
+            {% endcapture %}
+
+            {% render 'component__accordion',
+              inner_class: 'px-4',
+              button_class: 'px-4',
+              button_label: block.settings.heading,
+              content: accordion_content,
+              is_button: false
+            %}
+            
+          {% endunless %}
+          </div>
+
+        {% comment %} Map {% endcomment %}
+        {% when 'map' %}
+          <div class="py-4 md:hidden
+            {{ section.settings.main_color_scheme }}
+            {{ section.settings.main_color_border }}">
+            <div 
+              class="
+                flex flex-col items-start gap-2
+                {{ settings.x_margin }}
+              ">
+
+                {{ block.settings.html }}
+        
+            </div>
+          </div>
+
+        {% comment %} Contact {% endcomment %}
+        {% when 'contact' %}
+          <div class="pt-4 md:hidden
+            {{ section.settings.main_color_scheme }}
+            {{ section.settings.main_color_border }}">
+
+              {% capture accordion_content %}
+                {% unless block.settings.address == blank %}
+                  <div class="contact-info contact-address">
+                    <span class="contact-icon"><svg width="12" height="17" viewBox="0 0 12 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.38227 16.572C5.45129 16.6716 5.54343 16.7531 5.6508 16.8093C5.75817 16.8655 5.87756 16.8949 5.99877 16.8949C6.11997 16.8949 6.23937 16.8655 6.34674 16.8093C6.4541 16.7531 6.54624 16.6716 6.61527 16.572C11.1563 9.99002 11.9993 9.31402 11.9993 6.89502C11.9993 5.30372 11.3671 3.7776 10.2419 2.65238C9.11669 1.52716 7.59057 0.89502 5.99927 0.89502C4.40797 0.89502 2.88184 1.52716 1.75663 2.65238C0.631409 3.7776 -0.000732422 5.30372 -0.000732422 6.89502C-0.000732422 9.31402 0.842268 9.99002 5.38227 16.572ZM5.99927 9.39502C5.33623 9.39502 4.70034 9.13163 4.2315 8.66279C3.76266 8.19395 3.49927 7.55806 3.49927 6.89502C3.49927 6.23198 3.76266 5.59609 4.2315 5.12725C4.70034 4.65841 5.33623 4.39502 5.99927 4.39502C6.66231 4.39502 7.29819 4.65841 7.76703 5.12725C8.23588 5.59609 8.49927 6.23198 8.49927 6.89502C8.49927 7.55806 8.23588 8.19395 7.76703 8.66279C7.29819 9.13163 6.66231 9.39502 5.99927 9.39502Z" fill="currentColor"/></svg></span>{{ block.settings.address }}
+                  </div>
+                {% endunless %}
+                {% unless block.settings.phone == blank %}
+                  <div class="contact-info contact-phone">
+                    <a href="{{ block.settings.phone_link }}"><span class="contact-icon"><svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.4179 1.67645L12.1679 0.92645C11.9966 0.887559 11.8171 0.909623 11.6603 0.988842C11.5035 1.06806 11.3793 1.19947 11.3089 1.36045L9.80893 4.86045C9.74492 5.00995 9.73137 5.17624 9.77035 5.33413C9.80932 5.49202 9.8987 5.63291 10.0249 5.73545L11.9189 7.28545C10.7718 9.71869 8.81338 11.6767 6.37993 12.8235L4.82993 10.9295C4.72728 10.8034 4.5864 10.7141 4.42855 10.6751C4.2707 10.6361 4.10445 10.6496 3.95493 10.7135L0.454926 12.2135C0.293079 12.284 0.160896 12.4088 0.0811333 12.5663C0.00137064 12.7238 -0.0209812 12.9042 0.0179257 13.0765L0.767926 16.3265C0.806139 16.4917 0.899219 16.6391 1.03198 16.7446C1.16474 16.8501 1.32934 16.9075 1.49893 16.9074C5.34456 16.9074 9.0327 15.3798 11.752 12.6605C14.4713 9.94122 15.9989 6.25309 15.9989 2.40745C15.9992 2.23782 15.9418 2.07313 15.8363 1.94033C15.7307 1.80753 15.5832 1.7145 15.4179 1.67645Z" fill="currentColor"/></svg></span>{{ block.settings.phone }}</a>
+                  </div>
+                {% endunless %}
+                {% unless block.settings.email == blank %}
+                  <div class="contact-info contact-email">
+                    <a href="{{ block.settings.email_link }}"><span class="contact-icon"><svg width="16" height="13" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.6993 4.36971C14.9993 4.91371 14.0743 5.60771 10.8873 7.92271C10.2493 8.38571 9.11527 9.42071 7.99927 9.40771C6.89027 9.41671 5.77727 8.40771 5.11827 7.92371C1.93027 5.60771 0.999268 4.91671 0.299268 4.37371C0.271665 4.35278 0.238788 4.33992 0.204304 4.33658C0.16982 4.33323 0.135085 4.33953 0.103974 4.35478C0.0728629 4.37002 0.0465982 4.39361 0.0281098 4.42291C0.00962133 4.45221 -0.00036399 4.48607 -0.000732422 4.52071L-0.000732422 10.9077C-0.000732422 11.3055 0.157303 11.6871 0.438607 11.9684C0.719912 12.2497 1.10144 12.4077 1.49927 12.4077H14.4993C14.8971 12.4077 15.2786 12.2497 15.5599 11.9684C15.8412 11.6871 15.9993 11.3055 15.9993 10.9077V4.51672C15.9985 4.48223 15.9883 4.4486 15.9698 4.41952C15.9512 4.39045 15.925 4.36704 15.894 4.35186C15.8631 4.33668 15.8285 4.33032 15.7941 4.33347C15.7598 4.33662 15.727 4.34916 15.6993 4.36971ZM7.99927 8.40771C8.72427 8.42071 9.76827 7.49471 10.2933 7.11371C14.4403 4.10471 14.7553 3.84171 15.7123 3.09171C15.8018 3.02165 15.8742 2.9321 15.9239 2.82986C15.9736 2.72763 15.9994 2.6154 15.9993 2.50171V1.90771C15.9993 1.50989 15.8412 1.12836 15.5599 0.847054C15.2786 0.56575 14.8971 0.407715 14.4993 0.407715H1.49927C1.10144 0.407715 0.719912 0.56575 0.438607 0.847054C0.157303 1.12836 -0.000732422 1.50989 -0.000732422 1.90771L-0.000732422 2.50171C-0.000613678 2.6156 0.0253712 2.72798 0.0752614 2.83035C0.125152 2.93273 0.197644 3.02244 0.287268 3.09272C1.24327 3.83972 1.55927 4.10471 5.70627 7.11471C6.23027 7.49471 7.27427 8.42071 7.99927 8.40771Z" fill="currentColor"/></svg></span>{{ block.settings.email }}</a>
+                  </div>
+                {% endunless %}
+              {% endcapture %}
+
+            {% render 'component__accordion',
+              inner_class: 'px-4',
+              button_class: 'px-4',
+              button_label: block.settings.heading,
+              content: accordion_content,
+              is_button: false
+            %}
+        
+          </div>
+          
+      {% endcase %}
+    {% endfor %}
+  </div>
+
+  {% comment %} Desktop {% endcomment %}
+  <section 
+    class="
+      hidden md:block border--t-width
+      {{ section.settings.main_color_border }}
+      {{ section.settings.main_color_scheme }}
+    "
+    style="
+      padding-top:{{ section.settings.spacing_top }}px;
+      padding-bottom:{{ section.settings.spacing_bottom }}px;
+    ">
+    <div 
+      class="{{ settings.x_margin }}">
+      <div 
+        class="flex py-8">
+        <div 
+          class="
+            flex flex-wrap gap-12 grow
+            {{ section.settings.main_layout_x_alignment }}
+          ">
+          {% for block in section.blocks %}
+            {% case block.type %}
+    
+              {% comment %} Newsletter {% endcomment %}
+              {% when 'newsletter' %}
+                <div class="max-w-[250px] footer-newsletter">
+                  {% form 'customer' %}
+                    <div 
+                      class="flex flex-col items-start gap-2">
+                
+                      {% unless block.settings.heading == blank %}
+                        <h3 class="type__heading type__heading-5">
+                          {{ block.settings.heading }}
+                        </h3>
+                      {% endunless %}
+                
+                      {% if form.errors %}
+                        <div class="p-2 mt-2 color__bg-overlay-1 type--small border--radius">
+                          {{ form.errors | default_errors }}
+                        </div>
+                      {% endif %}
+                
+                      {% if form.posted_successfully? %}
+                        <div class="space-y-4 type--small">
+                          {{ block.settings.success }}
+                        </div>
+                      {% else %}
+                        <div class="space-y-4">
+                          {{ block.settings.content }}
+                        </div>
+                        <label 
+                          class="sr-only"
+                          for="customer_email_footer_desktop">
+                          {{ 'labels.email' | t }}
+                        </label>
+                        <input 
+                          id="customer_email_footer_desktop"
+                          class="flex-grow form-input" 
+                          name="contact[email]"
+                          type="email"
+                          placeholder="{{ 'actions.email_placeholder' | t }}" 
+                          autocorrect="off" 
+                          autocapitalize="off"/>
+                        <button 
+                          class="
+                            whitespace-nowrap btn
+                            {{ section.settings.main_color_button }}
+                          "
+                          type="submit">
+                          <span class="btn__content">{{ block.settings.button }}</span>
+                        </button>
+                        {% unless block.settings.disclaimer == blank %}
+                          <div class="space-y-4 opacity-50 type--smaller">
+                            {{ block.settings.disclaimer }}
+                          </div>
+                        {% endunless %}
+                      {% endif %}
+                
+                    </div>
+                  {% endform %}
+                </div>
+    
+              {% comment %} Content {% endcomment %}
+              {% when 'content' %}
+                <div class="max-w-[250px] footer-content">
+                  <div 
+                    class="flex flex-col items-start gap-2">
+
+                    {% capture logo_size %}
+                      height: {{ block.settings.logo_desktop_height }}px;
+                      width: {{ block.settings.logo_desktop_height | times: block.settings.logo.aspect_ratio }}px;
+                    {% endcapture %}
+        
+                    {% if block.settings.logo %}
+                      <a 
+                        class="relative items-center block" 
+                        style="{{ logo_size }}"
+                        href="{{ routes.root_url }}" 
+                        title="{{ shop.name }}">
+                        {{ block.settings.logo
+                        | image_url: width: 400
+                        | image_tag: style: 'object-fit:cover', class: 'w-full h-full !bg-transparent object-contain', alt: block.settings.logo.alt }}
+                      </a>
+                    {% endif %}
+
+                    {% unless block.settings.heading == blank %}
+                      <h3 class="type__heading type__heading-5">
+                        {{ block.settings.heading }}
+                      </h3>
+                    {% endunless %}
+                  
+                    {% unless block.settings.content == blank %}
+                      <div class="space-y-4">
+                        {{ block.settings.content }}
+                      </div>
+                    {% endunless %}
+
+                    {% unless block.settings.button_url == blank %}
+                      <a 
+                        class="btn {{ section.settings.main_color_button }}"
+                        href="{{ block.settings.button_url }}">
+                        {{ block.settings.button_label }}
+                      </a>
+                    {% endunless %}
+                    
+                  </div>
+                </div>
+
+              {% comment %} Menu {% endcomment %}
+              {% when 'menu' %}
+                <div class="max-w-[250px] footer-menu">
+                  {% unless block.settings.heading == blank %}
+                    <h3 class="type__heading type__heading-5">
+                      {{ block.settings.heading }}
+                    </h3>
+                  {% endunless %}
+                  <nav>
+                    {% for link in block.settings.menu.links %}
+                      <a 
+                        class="
+                          block mb-4 no-underline
+                          {% if settings.enable_animations %}
+                            motion-safe:scroll-fadein-2-20
+                          {% endif %}
+                        "
+                        href="{{ link.url }}">
+                        {{ link.title }}
+                      </a>
+                      {% for child_link in link.links %}
+                        <a 
+                          class="
+                            block mb-4 no-underline opacity-75
+                            {% if settings.enable_animations %}
+                              motion-safe:scroll-fadein-2-20
+                            {% endif %}
+                          "
+                          href="{{ child_link.url }}">
+                          {{ child_link.title }}
+                        </a>
+                        {% for grandchild_link in child_link.links %}
+                          <a 
+                            class="
+                              block mb-4 no-underline opacity-75
+                              {% if settings.enable_animations %}
+                                motion-safe:scroll-fadein-2-20
+                              {% endif %}
+                            "
+                            href="{{ child_link.url }}">
+                            {{ grandchild_link.title }}
+                          </a>
+                        {% endfor %}
+                      {% endfor %}
+                    {% endfor %}
+                  </nav>
+                </div>
+
+              {% comment %} Map {% endcomment %}
+              {% when 'map' %}
+                <div class="footer-map">
+                  <div 
+                    class="
+                      flex flex-col items-start gap-2
+                      {{ settings.x_margin }}
+                    ">
+      
+                      {{ block.settings.html }}
+              
+                  </div>
+                </div>
+
+              {% comment %} Contact {% endcomment %}
+              {% when 'contact' %}
+                <div class="footer-contact">
+                  <div 
+                    class="flex flex-col items-start gap-2">
+
+                    {% unless block.settings.heading == blank %}
+                      <h3 class="type__heading type__heading-5">
+                        {{ block.settings.heading }}
+                      </h3>
+                    {% endunless %}
+                  
+                    {% unless block.settings.address == blank %}
+                      <div class="contact-info contact-address">
+                        <span class="contact-icon"><svg width="12" height="17" viewBox="0 0 12 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.38227 16.572C5.45129 16.6716 5.54343 16.7531 5.6508 16.8093C5.75817 16.8655 5.87756 16.8949 5.99877 16.8949C6.11997 16.8949 6.23937 16.8655 6.34674 16.8093C6.4541 16.7531 6.54624 16.6716 6.61527 16.572C11.1563 9.99002 11.9993 9.31402 11.9993 6.89502C11.9993 5.30372 11.3671 3.7776 10.2419 2.65238C9.11669 1.52716 7.59057 0.89502 5.99927 0.89502C4.40797 0.89502 2.88184 1.52716 1.75663 2.65238C0.631409 3.7776 -0.000732422 5.30372 -0.000732422 6.89502C-0.000732422 9.31402 0.842268 9.99002 5.38227 16.572ZM5.99927 9.39502C5.33623 9.39502 4.70034 9.13163 4.2315 8.66279C3.76266 8.19395 3.49927 7.55806 3.49927 6.89502C3.49927 6.23198 3.76266 5.59609 4.2315 5.12725C4.70034 4.65841 5.33623 4.39502 5.99927 4.39502C6.66231 4.39502 7.29819 4.65841 7.76703 5.12725C8.23588 5.59609 8.49927 6.23198 8.49927 6.89502C8.49927 7.55806 8.23588 8.19395 7.76703 8.66279C7.29819 9.13163 6.66231 9.39502 5.99927 9.39502Z" fill="currentColor"/></svg></span>{{ block.settings.address }}
+                      </div>
+                    {% endunless %}
+                    {% unless block.settings.phone == blank %}
+                      <div class="contact-info contact-phone">
+                        <a href="{{ block.settings.phone_link }}"><span class="contact-icon"><svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.4179 1.67645L12.1679 0.92645C11.9966 0.887559 11.8171 0.909623 11.6603 0.988842C11.5035 1.06806 11.3793 1.19947 11.3089 1.36045L9.80893 4.86045C9.74492 5.00995 9.73137 5.17624 9.77035 5.33413C9.80932 5.49202 9.8987 5.63291 10.0249 5.73545L11.9189 7.28545C10.7718 9.71869 8.81338 11.6767 6.37993 12.8235L4.82993 10.9295C4.72728 10.8034 4.5864 10.7141 4.42855 10.6751C4.2707 10.6361 4.10445 10.6496 3.95493 10.7135L0.454926 12.2135C0.293079 12.284 0.160896 12.4088 0.0811333 12.5663C0.00137064 12.7238 -0.0209812 12.9042 0.0179257 13.0765L0.767926 16.3265C0.806139 16.4917 0.899219 16.6391 1.03198 16.7446C1.16474 16.8501 1.32934 16.9075 1.49893 16.9074C5.34456 16.9074 9.0327 15.3798 11.752 12.6605C14.4713 9.94122 15.9989 6.25309 15.9989 2.40745C15.9992 2.23782 15.9418 2.07313 15.8363 1.94033C15.7307 1.80753 15.5832 1.7145 15.4179 1.67645Z" fill="currentColor"/></svg></span>{{ block.settings.phone }}</a>
+                      </div>
+                    {% endunless %}
+                    {% unless block.settings.email == blank %}
+                      <div class="contact-info contact-email">
+                        <a href="{{ block.settings.email_link }}"><span class="contact-icon"><svg width="16" height="13" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M15.6993 4.36971C14.9993 4.91371 14.0743 5.60771 10.8873 7.92271C10.2493 8.38571 9.11527 9.42071 7.99927 9.40771C6.89027 9.41671 5.77727 8.40771 5.11827 7.92371C1.93027 5.60771 0.999268 4.91671 0.299268 4.37371C0.271665 4.35278 0.238788 4.33992 0.204304 4.33658C0.16982 4.33323 0.135085 4.33953 0.103974 4.35478C0.0728629 4.37002 0.0465982 4.39361 0.0281098 4.42291C0.00962133 4.45221 -0.00036399 4.48607 -0.000732422 4.52071L-0.000732422 10.9077C-0.000732422 11.3055 0.157303 11.6871 0.438607 11.9684C0.719912 12.2497 1.10144 12.4077 1.49927 12.4077H14.4993C14.8971 12.4077 15.2786 12.2497 15.5599 11.9684C15.8412 11.6871 15.9993 11.3055 15.9993 10.9077V4.51672C15.9985 4.48223 15.9883 4.4486 15.9698 4.41952C15.9512 4.39045 15.925 4.36704 15.894 4.35186C15.8631 4.33668 15.8285 4.33032 15.7941 4.33347C15.7598 4.33662 15.727 4.34916 15.6993 4.36971ZM7.99927 8.40771C8.72427 8.42071 9.76827 7.49471 10.2933 7.11371C14.4403 4.10471 14.7553 3.84171 15.7123 3.09171C15.8018 3.02165 15.8742 2.9321 15.9239 2.82986C15.9736 2.72763 15.9994 2.6154 15.9993 2.50171V1.90771C15.9993 1.50989 15.8412 1.12836 15.5599 0.847054C15.2786 0.56575 14.8971 0.407715 14.4993 0.407715H1.49927C1.10144 0.407715 0.719912 0.56575 0.438607 0.847054C0.157303 1.12836 -0.000732422 1.50989 -0.000732422 1.90771L-0.000732422 2.50171C-0.000613678 2.6156 0.0253712 2.72798 0.0752614 2.83035C0.125152 2.93273 0.197644 3.02244 0.287268 3.09272C1.24327 3.83972 1.55927 4.10471 5.70627 7.11471C6.23027 7.49471 7.27427 8.42071 7.99927 8.40771Z" fill="currentColor"/></svg></span>{{ block.settings.email }}</a>
+                      </div>
+                    {% endunless %}
+                    
+                  </div>
+                </div>
+
+            {% endcase %}
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {% comment %} Sub footer {% endcomment %}
+  <section 
+    class="
+      py-4 border--t-width flex flex-wrap gap-2
+      {{ section.settings.sub_color_scheme }}
+      {{ section.settings.sub_color_border }}
+    ">
+
+    {% comment %} Social and links {% endcomment %}
+    <div 
+      class="
+        flex flex-wrap w-full items-center justify-between gap-2 
+        {{ settings.x_margin }}
+      ">
+
+      {% comment %} Social links {% endcomment %}
+      <div 
+        class="flex items-center w-full gap-2 md:w-auto">
+        {% unless settings.social_tiktok_link == blank %}
+        <a href="{{ settings.social_tiktok_link }}" target="_blank" title="TikTok"
+          class="inline-flex no-underline opacity-50 hover:no-underline">
+          {% render 'component__icon', icon: 'tiktok', size: '24', class: '' %}
+        </a>
+        {% endunless %}
+        {% unless settings.social_instagram_link == blank %}
+        <a href="{{ settings.social_instagram_link }}" target="_blank" title="Instagram"
+          class="inline-flex no-underline opacity-50 hover:no-underline">
+          {% render 'component__icon', icon: 'instagram', size: '24', class: '' %}
+        </a>
+        {% endunless %}
+        {% unless settings.social_twitter_link == blank %}
+        <a href="{{ settings.social_twitter_link }}" target="_blank" title="Twitter"
+          class="inline-flex no-underline opacity-50 hover:no-underline">
+          {% render 'component__icon', icon: 'twitter', size: '24', class: '' %}
+        </a>
+        {% endunless %}
+        {% unless settings.social_facebook_link == blank %}
+        <a href="{{ settings.social_facebook_link }}" target="_blank" title="Facebook"
+          class="inline-flex no-underline opacity-50 hover:no-underline">
+          {% render 'component__icon', icon: 'facebook', size: '24', class: '' %}
+        </a>
+        {% endunless %}
+        {% unless settings.social_pinterest_link == blank %}
+        <a href="{{ settings.social_pinterest_link }}" target="_blank" title="Pinterest"
+          class="inline-flex no-underline opacity-50 hover:no-underline">
+          {% render 'component__icon', icon: 'pinterest', size: '24', class: '' %}
+        </a>
+        {% endunless %}
+        {% unless settings.social_snapchat_link == blank %}
+        <a href="{{ settings.social_snapchat_link }}" target="_blank" title="Snapchat"
+          class="inline-flex no-underline opacity-50 hover:no-underline">
+          {% render 'component__icon', icon: 'snapchat', size: '24', class: '' %}
+        </a>
+        {% endunless %}
+        {% unless settings.social_tumblr_link == blank %}
+        <a href="{{ settings.social_tumblr_link }}" target="_blank" title="Tumblr"
+          class="inline-flex no-underline opacity-50 hover:no-underline">
+          {% render 'component__icon', icon: 'tumblr', size: '24', class: '' %}
+        </a>
+        {% endunless %}
+        {% unless settings.social_discord_link == blank %}
+        <a href="{{ settings.social_discord_link }}" target="_blank" title="Discord"
+          class="inline-flex no-underline opacity-50 hover:no-underline">
+          {% render 'component__icon', icon: 'discord', size: '24', class: '' %}
+        </a>
+        {% endunless %}
+        {% unless settings.social_linkedin_link == blank %}
+        <a href="{{ settings.social_linkedin_link }}" target="_blank" title="LinkedIn"
+          class="inline-flex no-underline opacity-50 hover:no-underline">
+          {% render 'component__icon', icon: 'linkedin', size: '24', class: '' %}
+        </a>
+        {% endunless %}
+        {% unless settings.social_twitch_link == blank %}
+        <a href="{{ settings.social_twitch_link }}" target="_blank" title="Twitch"
+          class="inline-flex no-underline opacity-50 hover:no-underline">
+          {% render 'component__icon', icon: 'twitch', size: '24', class: '' %}
+        </a>
+        {% endunless %}
+        {% unless settings.social_youtube_link == blank %}
+        <a href="{{ settings.social_youtube_link }}" target="_blank" title="YouTube"
+          class="inline-flex no-underline opacity-50 hover:no-underline">
+          {% render 'component__icon', icon: 'youtube', size: '24', class: '' %}
+        </a>
+        {% endunless %}
+        {% unless settings.social_vimeo_link == blank %}
+        <a href="{{ settings.social_vimeo_link }}" target="_blank" title="Vimeo"
+          class="inline-flex no-underline opacity-50 hover:no-underline">
+          {% render 'component__icon', icon: 'vimeo', size: '24', class: '' %}
+        </a>
+        {% endunless %}
+      </div>
+
+      {% comment %} Additional navigation links {% endcomment %}
+      <div 
+        class="w-full md:w-auto md:text-right">
+        <p 
+          class="flex flex-wrap gap-2 mb-0 type--small">
+          {% for link in section.settings.sub_links.links %}
+            <a href="{{ link.url }}">{{ link.title }}</a>
+          {% endfor %}
+        </p>
+      </div>
+
+    </div>
+
+    {% comment %} Login, currency and copyright {% endcomment %}
+    <div 
+      class="
+        flex flex-wrap w-full items-center justify-between gap-2
+        {{ settings.x_margin }}
+      ">
+
+      {% comment %} Buttons {% endcomment %}
+      <div 
+        class="flex flex-wrap w-full gap-2 md:w-auto">
+        {% if section.settings.sub_show_account_link and shop.customer_accounts_enabled %}
+          <a 
+            class="flex items-center no-underline type--small"
+            href="{{ routes.account_url }}" >
+            {% if customer %}
+              {{ 'labels.account' | t }}
+            {% else %}
+              {{ 'actions.log_in' | t }}
+            {% endif %}
+          </a>
+        {% endif %}
+        {% if settings.enable_audio %}
+          <button 
+            class="flex items-center type--small" 
+            @click="audio_overlay = true;">
+            {% render 'component__icon', icon: 'volume', size: '14', class: 'mr-1' %}
+            <span x-show="enable_audio == false">{{ 'labels.audio_off' | t }}</span>
+            <span x-show="enable_audio == true">{{ 'labels.audio_on' | t }}</span>
+          </button>
+        {% endif %}
+        {% if section.settings.sub_show_localization %}
+          {% if settings.enable_region or settings.enable_language %}
+            <button 
+              class="flex items-center gap-2 type--small"
+              @click="localization_overlay = true;">
+              <span 
+                class="fi type--smaller"
+                style="background-image: url(https://flagicons.lipis.dev/flags/4x3/{{ localization.country.iso_code | downcase }}.svg)">
+              </span>
+              <span class="hover:underline">
+                {{ localization.country.currency.symbol }} {{ localization.country.currency.iso_code }}
+                {% if settings.type_seperator == 'dot' %}·{% else %}|{% endif %}
+                {{ localization.language.iso_code | upcase }}
+              </span> 
+            </button>
+          {% endif %}
+        {% endif %}
+
+        {% if shop.features.follow_on_shop? and section.settings.sub_enable_follow_on_shop %}
+          {% # theme-check-disable %}
+            {{ shop | login_button: action: 'follow' }}
+          {% # theme-check-enable %}
+        {% endif %}
+        
+      </div>
+
+      {% comment %} Payment icons and copyright {% endcomment %}
+      <div 
+        class="flex flex-wrap w-full gap-2 md:w-auto md:text-right">
+        {% if section.settings.sub_show_payment_icons %}
+          <ul class="flex flex-wrap w-full gap-2 p-0 m-0 list-none md:justify-end" role="list">
+            {% for type in shop.enabled_payment_types %}
+            <li>
+              {{ type | payment_type_svg_tag: class: 'icon icon--full-color' }}
+            </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+        <div class="w-full space-y-4 opacity-50 type--small">
+          {% capture current_year %}{{ "now" | date: "%Y" }} {{ section.settings.shop_name }}{% endcapture %}
+          {{ 'info.copyright' | t: y: current_year }}
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+  
+</footer>
+
+{% schema %}
+{
+  "name":"t:sections.theme_footer.name",
+  "class": "section-footer",
+  "settings":[
+    {
+      "type": "header",
+      "content": "t:general.headers.spacing.content"
+    },
+    {
+      "type": "range",
+      "id": "spacing_top",
+      "min": 0,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "t:general.settings.top_spacing.label",
+      "default": 300
+    },
+    {
+      "type": "range",
+      "id": "spacing_bottom",
+      "min": 0,
+      "max": 300,
+      "step": 10,
+      "unit": "px",
+      "label": "t:general.settings.bottom_spacing.label",
+      "default": 300
+    },
+    {
+      "type":"header",
+      "content":"t:general.headers.main_section.content"
+    },
+    {
+      "type":"select",
+      "id":"main_color_scheme",
+      "label":"t:general.settings.color_scheme.label",
+      "options":[
+        {
+          "value":"color__bg-body color__text",
+          "label":"t:general.settings.color_scheme.body.label"
+        },
+        {
+          "value":"color__bg-neutral color__text",
+          "label":"t:general.settings.color_scheme.neutral.label"
+        },
+        {
+          "value":"color__bg-overlay-1 color__text",
+          "label":"t:general.settings.color_scheme.accent_1.label"
+        },
+        {
+          "value":"color__bg-overlay-2 color__text",
+          "label":"t:general.settings.color_scheme.accent_2.label"
+        },
+        {
+          "value":"color__bg-overlay-3 color__text",
+          "label":"t:general.settings.color_scheme.accent_3.label"
+        },
+        {
+          "value":"color__bg-shade-1 color__text",
+          "label":"t:general.settings.color_scheme.shade_1.label"
+        },
+        {
+          "value":"color__bg-shade-2 color__text",
+          "label":"t:general.settings.color_scheme.shade_2.label"
+        },
+        {
+          "value":"color__bg-shade-3 color__text",
+          "label":"t:general.settings.color_scheme.shade_3.label"
+        },
+        {
+          "value":"color__bg-primary color__primary",
+          "label":"t:general.settings.color_scheme.primary.label"
+        },
+        {
+          "value":"color__bg-secondary color__secondary",
+          "label":"t:general.settings.color_scheme.secondary.label"
+        },
+        {
+          "value":"color__bg-tertiary color__tertiary",
+          "label":"t:general.settings.color_scheme.tertiary.label"
+        }
+      ],
+      "default":"color__bg-body color__text"
+    },
+    {
+      "type":"select",
+      "id":"main_color_border",
+      "label":"t:general.settings.color_border.label",
+      "options":[
+        {
+          "value":"color__border-divider-1",
+          "label":"t:general.settings.color_border.subtle.label"
+        },
+        {
+          "value":"color__border-selected-1",
+          "label":"t:general.settings.color_border.strong.label"
+        },
+        {
+          "value":"!color__border-transparent",
+          "label":"t:general.settings.color_border.none.label"
+        }
+      ],
+      "default":"color__border-divider-1"
+    },
+    {
+      "type":"select",
+      "id":"main_color_button",
+      "label":"t:general.settings.color_button.label",
+      "options":[
+        {
+          "value":"btn--small",
+          "label":"t:general.settings.color_button.primary.label"
+        },
+        {
+          "value":"btn--small btn--secondary",
+          "label":"t:general.settings.color_button.secondary.label"
+        },
+        {
+          "value":"btn--small btn--tertiary",
+          "label":"t:general.settings.color_button.tertiary.label"
+        },
+        {
+          "value":"btn--small btn--neutral",
+          "label":"t:general.settings.color_button.neutral.label"
+        },
+        {
+          "value":"btn--small btn--plain",
+          "label":"t:general.settings.color_button.plain.label"
+        },
+        {
+          "value":"btn--small btn--outline",
+          "label":"t:general.settings.color_button.outline.label"
+        },
+        {
+          "value":"btn--small btn--outline-alt",
+          "label":"t:general.settings.color_button.inverted_outline.label"
+        },
+        {
+          "value":"btn--small btn--minimal",
+          "label":"t:general.settings.color_button.link.label"
+        },
+        {
+          "value":"btn--small btn--minimal-alt",
+          "label":"t:general.settings.color_button.inverted_link.label"
+        }
+      ],
+      "default":"btn--small btn--secondary"
+    },
+    {
+      "type":"select",
+      "id":"main_layout_x_alignment",
+      "label":"t:general.settings.x_alignment.label",
+      "options":[
+        {
+          "value":"justify-start",
+          "label":"t:general.settings.x_alignment.left.label"
+        },
+        {
+          "value":"justify-between",
+          "label":"t:general.settings.x_alignment.center.label"
+        },
+        {
+          "value":"justify-end",
+          "label":"t:general.settings.x_alignment.right.label"
+        }
+      ],
+      "default":"justify-between"
+    },
+    {
+      "type":"header",
+      "content":"t:general.headers.sub_footer.content"
+    },
+    {
+      "type":"select",
+      "id":"sub_color_scheme",
+      "label":"t:general.settings.color_scheme.label",
+      "options":[
+        {
+          "value":"color__bg-body color__text",
+          "label":"t:general.settings.color_scheme.body.label"
+        },
+        {
+          "value":"color__bg-neutral color__text",
+          "label":"t:general.settings.color_scheme.neutral.label"
+        },
+        {
+          "value":"color__bg-overlay-1 color__text",
+          "label":"t:general.settings.color_scheme.accent_1.label"
+        },
+        {
+          "value":"color__bg-overlay-2 color__text",
+          "label":"t:general.settings.color_scheme.accent_2.label"
+        },
+        {
+          "value":"color__bg-overlay-3 color__text",
+          "label":"t:general.settings.color_scheme.accent_3.label"
+        },
+        {
+          "value":"color__bg-shade-1 color__text",
+          "label":"t:general.settings.color_scheme.shade_1.label"
+        },
+        {
+          "value":"color__bg-shade-2 color__text",
+          "label":"t:general.settings.color_scheme.shade_2.label"
+        },
+        {
+          "value":"color__bg-shade-3 color__text",
+          "label":"t:general.settings.color_scheme.shade_3.label"
+        },
+        {
+          "value":"color__bg-primary color__primary",
+          "label":"t:general.settings.color_scheme.primary.label"
+        },
+        {
+          "value":"color__bg-secondary color__secondary",
+          "label":"t:general.settings.color_scheme.secondary.label"
+        },
+        {
+          "value":"color__bg-tertiary color__tertiary",
+          "label":"t:general.settings.color_scheme.tertiary.label"
+        }
+      ],
+      "default":"color__bg-overlay-1 color__text"
+    },
+    {
+      "type":"select",
+      "id":"sub_color_border",
+      "label":"t:general.settings.color_border.label",
+      "options":[
+        {
+          "value":"color__border-divider-1",
+          "label":"t:general.settings.color_border.subtle.label"
+        },
+        {
+          "value":"color__border-selected-1",
+          "label":"t:general.settings.color_border.strong.label"
+        },
+        {
+          "value":"!color__border-transparent",
+          "label":"t:general.settings.color_border.none.label"
+        }
+      ],
+      "default":"color__border-divider-1"
+    },
+    {
+      "type":"link_list",
+      "id":"sub_links",
+      "label":"t:general.settings.submenu.label",
+      "default": "footer"
+    },
+    {
+      "type":"checkbox",
+      "id":"sub_show_account_link",
+      "label":"t:general.settings.show_account_link.label",
+      "default":false
+    },
+    {
+      "type":"checkbox",
+      "id":"sub_show_localization",
+      "label":"t:general.settings.show_localization.label",
+      "default":false
+    },
+    {
+      "type":"checkbox",
+      "id":"sub_show_payment_icons",
+      "label":"t:general.settings.show_payment_icons.label",
+      "default":false
+    },
+    {
+      "type": "checkbox",
+      "id": "sub_enable_follow_on_shop",
+      "label": "t:general.settings.enable_follow_on_shop.label",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "shop_name",
+      "label": "Shop name"
+    },
+    {
+      "type":"header",
+      "content":"t:general.headers.display.content"
+    },
+    {
+      "type":"select",
+      "id":"visibility",
+      "label":"t:general.settings.visibility.label",
+      "options":[
+        {
+          "value":"",
+          "label":"t:general.settings.visibility.all.label"
+        },
+        {
+          "value":"md:hidden",
+          "label":"t:general.settings.visibility.mobile.label"
+        },
+        {
+          "value":"hidden md:block",
+          "label":"t:general.settings.visibility.desktop.label"
+        }
+      ],
+      "default":""
+    }
+  ],
+  "blocks":[
+    {
+      "type":"menu",
+      "name":"t:sections.theme_footer.blocks.menu.name",
+      "limit":8,
+      "settings":[
+        {
+          "type":"text",
+          "id":"heading",
+          "label":"t:general.settings.heading.label"
+        },
+        {
+          "type":"link_list",
+          "id":"menu",
+          "label":"t:general.settings.menu.label",
+          "default": "footer"
+        }
+      ]
+    },
+    {
+      "type":"content",
+      "name":"t:sections.theme_footer.blocks.content.name",
+      "limit":3,
+      "settings":[
+        {
+          "type":"text",
+          "id":"heading",
+          "label":"t:general.settings.heading.label",
+          "default":{
+            "en":"Block heading",
+            "es":"Encabezado de bloque",
+            "it":"Intestazione del blocco",
+            "de":"Blocküberschrift",
+            "fr":"En-tête de bloc"
+          }
+        },
+        {
+          "type":"richtext",
+          "id":"content",
+          "label":"t:general.settings.content.label",
+          "default":{
+            "en":"<p>Remind customers of offers like free shipping and lifetime warranty</p>",
+            "es":"<p>Recuerde a los clientes ofertas como envío gratuito y garantía de por vida</p>",
+            "it":"<p>Ricorda ai clienti offerte come la spedizione gratuita e la garanzia a vita</p>",
+            "de":"<p>Erinnern Sie Kunden an Angebote wie kostenlosen Versand und lebenslange Garantie</p>",
+            "fr":"<p>Rappelez aux clients des offres telles que la livraison gratuite et la garantie à vie</p>"
+          }
+        },
+        {
+          "type":"text",
+          "id":"button_label",
+          "label":"t:general.settings.button_label.label",
+          "default":{
+            "en":"Button",
+            "es":"Botón",
+            "it":"Bottone",
+            "de":"Knopf",
+            "fr":"Bouton"
+          }
+        },
+        {
+          "type":"url",
+          "id":"button_url",
+          "label":"t:general.settings.button_url.label",
+          "default":"/collections/all"
+        },
+        {
+          "type":"image_picker",
+          "id":"logo",
+          "label":"t:general.settings.logo.label"
+        },
+        {
+          "type":"range",
+          "id":"logo_desktop_height",
+          "min":20,
+          "max":70,
+          "step":1,
+          "unit":"px",
+          "label":"t:general.settings.desktop_logo_height.label",
+          "default":30
+        },
+        {
+          "type":"range",
+          "id":"logo_mobile_height",
+          "min":10,
+          "max":50,
+          "step":1,
+          "unit":"px",
+          "label":"t:general.settings.mobile_logo_height.label",
+          "default":20
+        }
+      ]
+    },
+    {
+      "type":"newsletter",
+      "name":"t:sections.theme_footer.blocks.newsletter.name",
+      "limit":1,
+      "settings":[
+        {
+          "type":"text",
+          "id":"heading",
+          "label":"t:general.settings.heading.label",
+          "default":{
+            "en":"Newsletter",
+            "es":"Boletín",
+            "it":"Newsletter",
+            "de":"Newsletter",
+            "fr":"Bulletin"
+          }
+        },
+        {
+          "type":"richtext",
+          "id":"content",
+          "label":"t:general.settings.content.label",
+          "default":{
+            "en":"<p>Tell customers why they should subscribe to your newsletter.</p>",
+            "es":"<p>Dígales a los clientes por qué deberían suscribirse a su boletín informativo.</p>",
+            "it":"<p>Dì ai clienti perché dovrebbero iscriversi alla tua newsletter.</p>",
+            "de":"<p>Teilen Sie Ihren Kunden mit, warum sie Ihren Newsletter abonnieren sollten.</p>",
+            "fr":"<p>Expliquez aux clients pourquoi ils devraient s’abonner à votre newsletter.</p>"
+          }
+        },
+        {
+          "type":"text",
+          "id":"button",
+          "label":"t:general.settings.button_label.label",
+          "default":{
+            "en":"Subscribe",
+            "es":"Subscribir",
+            "it":"Abbonarsi",
+            "de":"Abonnieren",
+            "fr":"S’inscrire"
+          }
+        },
+        {
+          "type":"richtext",
+          "id":"disclaimer",
+          "label":"t:general.settings.disclaimer.label"
+        },
+        {
+          "type":"richtext",
+          "id":"success",
+          "label":"t:general.settings.success_message.label",
+          "default":{
+            "en":"<p>Success! You’ve been subscribed.</p>",
+            "es":"<p>Gracias por suscribirte</p>",
+            "it":"<p>Grazie per esserti iscritto</p>",
+            "de":"<p>Vielen Dank für Ihre Anmeldung</p>",
+            "fr":"<p>Merci de vous être abonné</p>"
+          }
+        }
+      ]
+    },
+    {
+      "type":"map",
+      "name":"Map",
+      "limit":1,
+      "settings":[
+        {
+          "type":"html",
+          "id":"html",
+          "label":"t:general.settings.liquid.label",
+          "info": "Add map iframe here."
+        }
+      ]
+    },
+    {
+      "type":"contact",
+      "name":"Contact",
+      "limit":1,
+      "settings":[
+        {
+          "type":"text",
+          "id":"heading",
+          "label":"t:general.settings.heading.label"
+        },
+        {
+          "type":"richtext",
+          "id":"address",
+          "label":"Address"
+        },
+        {
+          "type":"text",
+          "id":"phone",
+          "label":"Phone"
+        },
+        {
+          "type":"url",
+          "id":"phone_link",
+          "label":"Phone link"
+        },
+        {
+          "type":"text",
+          "id":"email",
+          "label":"Email"
+        },
+        {
+          "type":"url",
+          "id":"email_link",
+          "label":"Email link"
+        }
+      ]
+    }
+  ],
+  "disabled_on":{
+    "groups":[
+      "custom.overlay"
+    ]
+  }
+}
+{% endschema %}

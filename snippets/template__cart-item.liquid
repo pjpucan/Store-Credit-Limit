@@ -1,0 +1,276 @@
+<!-- snippets/template__cart-item.liquid -->
+{% comment %} 
+  Cart item
+
+  Usage:
+    {% render 'template__cart-item' %}
+  
+  Globals:
+  - type_seperator: {string} This sets the style for the divider between the cart items. It can be 'dot' or 'line'.
+  - enable_animations: {boolean} This indicates whether animations should be used in the cart. If true, animations are enabled.
+  
+  Recommendations:
+  - Must be used within a <template> tag with AlpineJS enabled
+{% endcomment %}
+
+<div 
+  class="
+    border--b-width flex w-full items-stretch justify-between
+    {{ section.settings.main_color_scheme_first }}
+    {{ section.settings.main_color_border }}
+  ">
+
+  {% comment %} Image {% endcomment %}
+  <div 
+    class="w-[20%] flex-none overflow-hidden flex items-start justify-center p-4 !pr-0">
+    <a 
+      class="
+        flex items-start w-full border--width
+        {{ section.settings.color_border }}
+      "
+      :href="`${ item.url }`">
+      <img 
+        class="object-cover w-full h-full color__bg-shade-2 aspect-1"
+        {% if settings.enable_animations %}
+          :class="{ 
+            'opacity-50' : cart_loading }" 
+        {% endif %}
+        width="200"
+        loading="lazy"
+        :src="`${ item.image }&width=200`" 
+        :alt="`${ item.product_title }`"/>
+    </a>
+  </div>
+
+  {% comment %} Content {% endcomment %}
+  <div 
+    class="flex flex-col justify-between flex-grow gap-4 p-4 animation-300"
+    {% if settings.enable_animations %}
+      :class="{ 
+        'opacity-50' : cart_loading }"
+    {% endif %}>
+
+    {% comment %} Details and price {% endcomment %}
+    <div 
+      class="flex items-start justify-between gap-4"
+      x-data="{ properties_drop: false }">
+
+      {% comment %} Details {% endcomment %}
+      <div>
+
+        {% comment %} Title {% endcomment %}
+        <a 
+          class="flex mb-2 no-underline hover:no-underline"
+          tabindex="-1"
+          :href="item.url"
+          x-text="item.product_title">
+        </a>
+
+        {% comment %} Discount {% endcomment %}
+        <template x-for="(discount) in item.discounts">
+          <div class="flex mb-2">
+            {% capture badge_content %}
+              <span 
+                class="type--smaller" 
+                x-html="discount.title + ' ' + Shopify.formatMoney(discount.amount)">
+              </span>
+            {% endcapture %}
+            {% render 'component__badge', 
+              background: 'shade-1',
+              text: 'dark',
+              border: 'transparent',
+              content: badge_content %}
+          </div>
+        </template>
+        
+        {% comment %} Properties {% endcomment %}
+        <button 
+          class="flex items-center mb-2 type--smaller"
+          type="button" 
+          x-show="item.properties && Object.keys(item.properties).length > 0"
+          @click="properties_drop = ! properties_drop">
+          {% render 'component__icon', icon: 'plus', size: '14', class: 'mr-1' %}
+          {{ 'actions.see_details' | t }}
+        </button>
+        <div x-show="properties_drop">
+          <template x-if="item.properties">
+            <template x-for="property in Object.entries(item.properties)">
+              <template x-if="!property[0].startsWith('__')">
+                <p 
+                  class="flex opacity-75 type--smaller"  
+                  x-text="property[0] + ' : ' + property[1]">
+                </p>
+              </template>
+            </template>
+          </template>
+        </div>
+
+      </div>
+      
+      {% comment %} Price {% endcomment %}
+      <div 
+        class="flex flex-col items-end flex-none">
+
+        {% comment %} Price {% endcomment %}
+        <div
+          class="flex flex-col items-end">
+          <span 
+            x-html="Shopify.formatMoney(item.line_price)">
+          </span>
+          <span
+            x-show="item.total_discount > 0"
+            x-cloak>
+            <s
+              class="opacity-50"
+              x-html="Shopify.formatMoney(item.original_line_price)">
+            </s>
+          </span>
+        </div>
+
+        {% comment %} Unit price {% endcomment %}
+        <div 
+          class="opacity-75 type--smaller"  
+          x-show="item.unit_price_measurement">
+          <span x-html="Shopify.formatMoney(item.unit_price)"></span>
+          <span>/</span>
+          <span x-text="item.unit_price_measurement ? item.unit_price_measurement.reference_value : ''"></span>
+          <span x-text="item.unit_price_measurement ? item.unit_price_measurement.reference_unit : ''"></span>
+        </div>
+
+        {% comment %} Additonal info {% endcomment %}
+        <div 
+          class="flex flex-col items-end">
+
+          {% comment %} Variant title {% endcomment %}
+          <p 
+            class="flex opacity-75 type--smaller" 
+            x-text="item.variant_title"
+            x-show="item.variant_title">
+          </p>
+
+          {% comment %} Item SKU {% endcomment %}
+          {% if section.settings.main_enable_cart_sku %}
+            <p 
+              class="flex opacity-75 type--smaller" 
+              x-text="item.sku"
+              x-show="item.sku">
+            </p>
+          {% endif %}
+
+          {% comment %} Selling plan {% endcomment %}
+          <p 
+            class="flex opacity-75 type--smaller"  
+            x-text="item.selling_plan_allocation ? item.selling_plan_allocation.selling_plan.name : ''"
+            x-show="item.selling_plan_allocation">
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+    {% comment %} Actions {% endcomment %}
+    <div 
+      class="flex items-end justify-between gap-4">
+
+      {% comment %} Quantity {% endcomment %}
+      <label 
+        class="sr-only" 
+        for="{{ product.id }}-quantity">
+        {{ 'labels.quantity' | t }}
+      </label>
+      <div
+        class="
+          relative flex overflow-hidden max-w-[128px]
+          border__input--radius border__input--radius border__input color__border-input hover:border__input--hover focus-within:border__input--focus
+        " 
+        x-data="{ 
+          button_loading: false
+        }">
+        <input
+          :id="'cart-' + item.key + '-quantity'"
+          class="!border-0 text-left !rounded-none" 
+          type="number" 
+          placeholder="1" 
+          min="1"
+          @change.debounce="
+            changeCartItemQuantity(item.key, item.quantity, false);
+            button_loading = true; 
+            setTimeout(function(){ button_loading = false}, 500);" 
+          x-model='item.quantity'
+        >
+        <div 
+          class="
+            btn__spinner !color__bg-overlay-1
+            !w-full !top-0 !bottom-0 !left-0 !right-0 !transform-none
+          "
+          :class="{ '!visible !z-10' : button_loading }">
+          {% render 'component__icon', icon: 'spinner', size: '24', class: '' %}
+        </div>
+        <div class="absolute right-0 flex flex-col justify-center h-full gap-0 color__bg-input">
+          <button 
+            class="btn btn--smaller btn--plain shrink-0 !rounded-none color__outline-input outline--width" 
+            title="{{ 'actions.increase_item_quantity' | t }}"
+            type="button"
+            :disabled="button_loading"
+            @click="
+              if(changeCartItemQuantity(item.key, item.quantity+1, false, false)) {
+                button_loading = true; 
+                setTimeout(function(){ button_loading = false}, 500);
+                item.quantity++;
+              }
+            ">
+            {% render 'component__icon', icon: 'chevron-up', size: '14', class: '' %}
+          </button>
+          <button 
+            class="btn btn--smaller btn--plain shrink-0 !rounded-none color__outline-input outline--width
+            title="{{ 'actions.decrease_item_quantity' | t }}"
+            type="button"
+            :disabled="button_loading"
+            @click.prevent="
+              if (item.quantity >= 1){
+                if(changeCartItemQuantity(item.key, item.quantity-1, false, false)) {
+                  button_loading = true; 
+                  setTimeout(function(){ button_loading = false}, 500);
+                  item.quantity--;
+                }
+              }
+            ">
+            {% render 'component__icon', icon: 'chevron-down', size: '14', class: '' %}
+          </button>
+        </div>
+      </div>
+      
+      {% comment %} Buttons {% endcomment %}
+      <div
+        class="flex gap-2"
+        x-data="{ button_loading: false }">
+        <button 
+          class="type--smaller"
+          :class="{ 'opacity-50' : cart_loading && button_loading }"
+          :disabled="button_loading"
+          x-show="!item.product_has_only_default_variant"
+          @click="
+            button_loading = true; 
+            fetchAndRenderQuickEdit(item.handle, item.variant_id, item.quantity); 
+            setTimeout(function(){ button_loading = false}, 500);
+          ">
+          {{ 'actions.edit' | t }} 
+        </button>
+        <button 
+          class="type--smaller"
+          :class="{ 'opacity-50' : cart_loading && button_loading }"
+          :disabled="button_loading"
+          @click="
+            button_loading = true; 
+            changeCartItemQuantity(item.key, 0, false); 
+            setTimeout(function(){ button_loading = false}, 500);
+          ">
+          {{ 'actions.delete' | t }}
+        </button>
+      </div>
+      
+    </div>
+
+  </div>
+
+</div>

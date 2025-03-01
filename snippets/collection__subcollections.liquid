@@ -1,0 +1,73 @@
+<!-- snippets/collection__subcollections.liquid -->
+{% comment %} 
+  This file is a snippet that generates a secondary navigation for collection pages in Shopify. It uses the collection's metafields to create sub-collections.
+
+  Globals:
+  - layout_horizontal: {string} Class string to set horizontal margin.
+
+  Usage:
+    {% render 'collection__subcollections' %}
+
+  Recommendations:
+  - These links are populated using metafields. For more information on how to add and manage metafields, refer to this guide: https://help.brickspacelab.com/en/articles/273-core-templates-collection
+{% endcomment %}
+
+{% assign sub_collections = collection.metafields.custom.subcollections.value | remove: '"]' | remove: '["' | split: '&' %}
+{% if sub_collections != blank %}
+  <section
+    class="
+      animation-1000
+      {{ section.settings.color_text }}
+      {% unless section.settings.color_scheme == 'custom' %}
+        {{ section.settings.color_scheme }}
+      {% endunless %}
+    "
+    {% if section.settings.color_scheme == 'custom' %}
+      style="
+        background:{{ section.settings.color_background }};
+      "
+    {% endif %}>
+    <nav 
+      class="
+        border--b-width flex flex-wrap py-4
+        {{ section.settings.color_border }}
+        {% if section.settings.enable_margin %}
+          {{ settings.x_margin }}
+        {% else %}
+          window--full
+        {% endif %}
+      ">
+      <div 
+        class="relative w-full"
+        x-data="{
+          index: 0,
+          index_scroll: 0,
+          index_size: {{ section.blocks.size }},
+          scrollToIndex(index_scroll) {
+            let slider = this.$refs.slider;
+            let currentSlide = slider.querySelector('[data-slide=&quot;'+ index_scroll + '&quot;]');
+            currentSlide.scrollIntoView({behavior: 'smooth', inline: 'start', block: 'nearest'});
+          }
+        }">
+
+        <div class="inline-flex w-full gap-2 overflow-x-auto whitespace-nowrap snap-x" 
+          x-ref="slider">
+          {% for collection in sub_collections %}
+            <div class="snap-center flex justify-center flex-none
+              {% if forloop.index0 == 0 %}ml-0{% endif %}
+              {% if forloop.last == true %}mr-4 md:mr-0{% endif %}" 
+              x-intersect:enter.full="index = {{ forloop.index0 }};"
+              x-bind:data-slide="{{ forloop.index0 }}">
+              <div class="flex w-full">
+                <a class="btn btn--secondary" href="{{ collection | split: ',' | last }}">
+                  {{ collection | split: ',' | first }}
+                </a>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+      </div>
+    </nav>
+  </section>
+{% endif %}

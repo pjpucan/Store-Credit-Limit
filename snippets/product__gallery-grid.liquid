@@ -1,0 +1,333 @@
+<!-- snippets/product__gallery-grid.liquid -->
+{% comment %} 
+  This block is used to display product photos in a grid layout. It can be used within a section or a product template.
+
+  Accepts:
+  - is_featured: {boolean} Assigns product object from section settings. Set this to true if block is used within a section rather than product template.
+  
+  Globals:
+  - layout_gap_size: {integer} Sets the gap size in the grid layout.
+
+  Usage:
+    {% render 'product__gallery-grid', 
+      is_featured: true 
+    %}
+
+  Recommendations:
+  - When a product only has one photo the image will not be shown in a grid.
+  - Mobile will default to the slider layout regardless.
+{% endcomment %}
+
+{% liquid
+  assign has_3d = product.media | where: "media_type", "model" | first
+
+  capture model_viewer_id
+    echo section.id
+    echo '-model-viewer'
+  endcapture
+
+  if is_featured
+    assign product = section.settings.product
+    if request.design_mode and product == null
+      for product in collections['all'].products limit:1
+        assign product = product
+      endfor
+    endif
+  endif
+
+  if section.settings.media_object_sizing == "cover"
+    capture crop_class
+      echo "object-cover"
+    endcapture
+  else
+    capture crop_class
+      echo "object-contain"
+    endcapture
+  endif
+
+  if section.settings.enable_ratio
+    capture ratio_class
+      echo section.settings.media_ratio
+    endcapture
+  endif
+
+  if is_overlay
+    capture ratio_class
+      echo "aspect-[1/1]"
+    endcapture
+    capture crop_class
+      echo "object-cover"
+    endcapture
+  endif
+%}
+
+{% comment %} Grid - desktop only {% endcomment %}
+<div 
+  class="
+    w-full hidden md:grid items-start h-full relative padding--gap
+    {% if product.media.size > 1 %}
+      md:grid-cols-{{ section.settings.media_grid_size }}
+    {% endif %}
+  "
+  style="
+    gap: {{ settings.gap_size }}px;
+  ">
+  {% capture media_group %}{% endcapture %}
+  {% for media in product.media %}
+
+    {% for variant in product.variants %}
+      {% if media.src == variant.featured_image.src %}
+        {% capture media_group %}
+          {{ variant.featured_image.id }}
+        {% endcapture %}
+      {% endif %}
+    {% endfor %}
+    <div 
+      class="
+        relative border--radius overflow-hidden flex items-center h-full
+        js-{{ media.id }}
+        {{ section.settings.media_color_scheme }}
+        {{ section.settings.media_border }}
+      "
+      {% if section.settings.enable_variant_images %}
+        x-show="current_variant_featured_image_id == {{ media_group }}"
+      {% endif %}>
+      {% case media.media_type %}
+
+        {% when 'image' %}
+          {% render 'gallery__image',
+            media: media,
+            ratio_class: ratio_class,
+            crop_class: crop_class,
+            enable_zoom: section.settings.enable_zoom,
+            enable_alt: section.settings.enable_alt,
+            index: forloop.index0
+          %}
+
+        {% when 'video' %}
+          {% render 'gallery__video',
+            media: media,
+            ratio_class: ratio_class,
+            crop_class: crop_class
+          %}
+
+        {% when 'external_video' %}
+          {% render 'gallery__external_video',
+            media: media,
+            ratio_class: ratio_class,
+            crop_class: crop_class
+          %}
+
+        {% when 'model' %}
+          {% capture model_viewer_id %}
+            {{ model_viewer_id }}-grid
+          {% endcapture %}
+          {% render 'gallery__model',
+            media: media,
+            ratio_class: ratio_class,
+            model_viewer_id: model_viewer_id
+          %}
+          
+      {% endcase %}
+    </div>
+
+  {% endfor %}
+</div>
+
+{% comment %} Slider - mobile only {% endcomment %}
+<div class="relative w-full md:hidden">
+  <div 
+    class="relative flex w-full">
+
+    {% comment %} Arrows {% endcomment %}
+    {% if product.media.size > 1 %}
+      <div 
+        class="absolute left-0 z-10 justify-start hidden h-full -translate-y-1/2 opacity-0 pointer-events-auto md:flex top-1/2 group-hover:opacity-100 animation-300 mix-blend-difference">
+        <button 
+          class="h-full !color__bg-transparent px-6 !border-0 !cursor-w-resize !rounded-none"
+          title="{{ 'actions.previous' | t }}"
+          type="button"
+          {% if settings.enable_animations %}
+            x-transition:enter="animation-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="animation-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          {% endif %}
+          x-cloak
+          @click="galleryScrollBack();">
+          <span 
+            class="btn btn--smaller btn--outline-alt !p-0 !border-0 !cursor-w-resize">
+            {% render 'component__icon', icon: 'chevron-left', size: '20', class: '' %}
+          </span>
+        </button>
+      </div>
+      <div 
+        class="absolute right-0 z-10 justify-end hidden h-full -translate-y-1/2 opacity-0 pointer-events-auto top-1/2 group-hover:opacity-100 animation-300 md:flex mix-blend-difference">
+        <button 
+          class="h-full !color__bg-transparent px-6 !cursor-e-resize !rounded-none"
+          type="button"
+          title="{{ 'actions.next' | t }}"
+          {% if settings.enable_animations %}
+            x-transition:enter="animation-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="animation-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          {% endif %}
+          x-cloak
+          @click="galleryScrollNext();">
+          <span 
+            class="btn btn--smaller btn--outline-alt !p-0 !border-0 !cursor-e-resize">
+            {% render 'component__icon', icon: 'chevron-right', size: '20', class: '' %}
+          </span>
+        </button>
+      </div>
+    {% endif %}
+    
+    {% comment %} Slides {% endcomment %}
+    <div 
+      class="inline-flex w-full overflow-x-auto overflow-y-hidden text-center scroll-smooth whitespace-nowrap md:snap-x md:snap-mandatory hidescrollbar padding--gap js-slider"
+      style="
+        gap: {{ settings.gap_size }}px;
+      "
+      x-ref="slider">
+      {% capture media_group %}{% endcapture %}
+      {% for media in product.media %}
+
+        {% for variant in product.variants %}
+          {% if media.src == variant.featured_image.src %}
+            {% capture media_group %}
+              {{ variant.featured_image.id }}
+            {% endcapture %}
+          {% endif %}
+        {% endfor %}
+        <div 
+          class="
+            relative md:snap-center flex-none border--radius overflow-hidden flex items-center
+            js-{{ media.id }}
+            {{ section.settings.media_color_scheme }}
+            {{ section.settings.media_border }}
+            {% if is_overlay %}
+              w-2/5
+            {% else %}
+              {% if product.media.size > 1 %}
+                w-4/5 md:w-[{{ section.settings.media_slider_size }}%] 
+              {% else %} 
+                w-full
+              {% endif %}
+            {% endif %}
+          "
+          x-bind:data-slide="{{ forloop.index0 }}"
+          x-intersect:enter.half="gallery_index = {{ forloop.index0 }};"
+          {% if section.settings.enable_variant_images and media.media_type == 'image' %}
+            x-show="current_variant_featured_image_id == {{ media_group }}"
+          {% endif %}>
+          {% case media.media_type %}
+
+            {% when 'image' %}
+              {% render 'gallery__image',
+                media: media,
+                ratio_class: ratio_class,
+                crop_class: crop_class,
+                enable_zoom: section.settings.enable_zoom,
+                enable_alt: section.settings.enable_alt,
+                index: forloop.index0
+              %}
+
+            {% when 'video' %}
+              {% render 'gallery__video',
+                media: media,
+                ratio_class: ratio_class,
+                crop_class: crop_class
+              %}
+
+            {% when 'external_video' %}
+              {% render 'gallery__external_video',
+                media: media,
+                ratio_class: ratio_class,
+                crop_class: crop_class
+              %}
+
+            {% when 'model' %}
+              {% capture model_viewer_id %}
+                {{ model_viewer_id }}-slider
+              {% endcapture %}
+              {% render 'gallery__model',
+                media: media,
+                ratio_class: ratio_class,
+                model_viewer_id: model_viewer_id
+              %}
+              
+          {% endcase %}
+        </div>
+
+      {% endfor %}
+    </div>
+
+    {% comment %} Indicators {% endcomment %}
+    {% if product.media.size > 1 %}
+      <div 
+        class="absolute left-0 right-0 flex flex-wrap items-center justify-center gap-2 px-2 text-center md:hidden bottom-2 mix-blend-difference padding--b-gap">
+        {% capture media_group %}
+          -
+        {% endcapture %}
+        {% for media in product.media %}
+          {% for variant in product.variants %}
+            {% if media.src == variant.featured_image %}
+              {% capture media_group %}
+                {{ variant.featured_image.id }}
+              {% endcapture %}
+            {% endif %}
+          {% endfor %}
+          <button 
+            class="w-2 h-1 bg-white opacity-25 animation-300--all border--radius !shadow-none" 
+            type="button"
+            :class="{ 
+              '!opacity-100 !w-3': gallery_index === {{ forloop.index0 }} 
+            }"
+            aria-label="gallery_grid_button_{{ forloop.index0 }}" 
+            @click="
+              galleryScrollToIndex({{ forloop.index0 }});
+            "
+            {% if media.media_type == 'image' and section.settings.enable_variant_images %}
+              x-show="current_variant_featured_image_id == {{ media_group }}"
+            {% endif %}>
+          </button>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+  </div>
+</div> 
+
+{% comment %} Load 3d viewer {% endcomment %}
+{% if has_3d %}
+  <script 
+    id="ProductJSON-{{ product.id }}"
+    type="application/json">
+    {{ product.media | where: 'media_type', 'model' | json }}
+  </script>
+  <script type="module">
+    function setupShopifyXr(){
+      if (!window.ShopifyXR) {
+        document.addEventListener('shopify_xr_initialized', function() {
+          setupShopifyXr();
+        });
+      }else{
+        window.ShopifyXR.addModels();
+        window.ShopifyXR.setupXRElements();
+      }
+    }
+  
+    window.Shopify.loadFeatures([
+      {
+        name: 'shopify-xr',
+        version: '1.0',
+        onLoad: setupShopifyXr
+      }
+    ]);
+  </script>
+{% endif %}

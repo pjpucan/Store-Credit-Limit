@@ -1,0 +1,83 @@
+<!-- snippets/component__pagination-default.liquid -->
+{% comment %} 
+  This component is used to navigate through multiple pages of content. It supports three types of pagination: scroll, load, and pages.
+  
+  Accepts:
+  - paginate: {Object} Liquid object with pagination values. 
+  
+  Globals:
+  - pagination_type: {string} Determines the type of pagination. It can be 'scroll', 'load', or 'pages'.
+  - layout_horizontal: {string} Determines the horizontal margin.
+
+  Usage:
+    {% render 'component__pagination-default', 
+      paginate: paginate 
+    %}
+
+  Recommendations:
+  - This component is best used inside a pagination object. For example, it can be used in a loop of products on a collection template to navigate through the pages of products.
+  - The 'scroll' type is recommended for infinite scrolling, 'load' type for loading more content on button click, and 'pages' type for traditional numbered pages.
+{% endcomment %}
+
+{% if paginate.pages > 1 %}
+  
+  <section 
+    class="flex flex-col w-full gap-2 pt-4 type--small" 
+    x-init="pagination_total_pages = {{ paginate.pages }};">
+    <div class="text-center">
+      <span>{{ 'labels.showing_pages' | t }}</span>
+      <span>{{ paginate.current_page }}</span>
+      {{ 'labels.of' | t | downcase }}
+      <span x-text="pagination_total_pages">{{ paginate.pages }}</span>
+    </div>
+    <div class="flex items-center justify-center gap-2 text-center">
+      {% if paginate.previous.is_link %}
+        <a 
+          class="btn btn--secondary btn--small" 
+          href="{{ paginate.previous.url | append: "#pagination" }}"
+          title="{{ paginate.previous.title }}">
+          {% render 'component__icon', icon: 'chevron-left', size: '20', class: '' %}
+        </a>
+      {% endif %}
+      {% if paginate.pages > 1 %}
+        {% for part in paginate.parts %}
+          {% if part.is_link %}
+            <a 
+              class="btn btn--plain btn--small"
+              href="{{ part.url }}"> {{ part.title }}</a>
+          {% else %}
+            {% if part.title == '&hellip;' %}
+              <a 
+                class="btn btn--plain btn--small" 
+                href="#" 
+                onclick="return false;">{{ part.title }}</a>
+            {% else %}
+              <a 
+                class="opacity-50 btn btn--plain btn--small" 
+                href="{{ part.url }}"> {{ part.title }}</a>
+            {% endif %}
+          {% endif %}
+        {% endfor %}     
+
+      {% endif %}
+      {% if paginate.next.is_link %}
+        <a 
+          class="btn btn--secondary btn--small" 
+          href="{{ paginate.next.url | append: "#pagination" }}"
+          title="{{ paginate.next.title }}">
+          {% render 'component__icon', icon: 'chevron-right', size: '20', class: '' %}
+        </a>
+      {% endif %}
+    </div>
+  </section>
+
+{% endif %}
+
+<script type="module">
+  window.__initialData = window.__initialData || {};
+  Object.assign(window.__initialData, {
+    pagination_total_pages: {{ paginate.pages | default: 1 }},
+    pagination_current_page: {{ paginate.current_page | default: 1 }},
+    pagination_section: "{{ section.id }}"
+  });
+</script>

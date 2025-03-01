@@ -1,0 +1,276 @@
+<!-- snippets/addresses__form.liquid -->
+{% comment %} 
+  This snippet is used to render a form for customer addresses on account pages. It accepts a unique id for the form, a URL to post to, and text for the submit button.
+
+  Accepts:
+  - id: {string} Unique id for the form.
+  - action: {string} URL to post to.
+  - cta: {string} Text for the submit button.
+
+  Usage:
+    {% render 'addresses__form',
+      id: 'new',
+      action: customer.new_address,
+      cta: address_create_button 
+    %}
+  
+  Recommendations:
+  - Use this snippet to render address forms on customer account pages.
+  - Ensure the 'id' is unique to prevent conflicts with other elements on the page.
+  - The 'action' should be a valid URL where the form data will be posted.
+  - The 'cta' is the text that will be displayed on the submit button.
+{% endcomment %}
+
+<div 
+  id="form_{{id}}" 
+  class="relative w-full">
+  {% form 'customer_address', action %}
+
+    {% liquid 
+      assign form_suffix = '_' | append: id 
+      assign form_country_id = 'country' | append: form_suffix 
+      assign form_province_container_id = 'provinceContainer' | append: form_suffix 
+      assign form_province_id = 'province' | append: form_suffix 
+    %}
+
+    <div class="p-4">
+      <div class='w-full mb-4'>
+        {% capture first_name_label %}{{ 'labels.first_name' | t }}{% endcapture %}
+        {%
+          render 'addresses__input',
+          required: 'true',
+          type: 'text', 
+          label: first_name_label,
+          placeholder: first_name_label,
+          name: 'address[first_name]',
+          value: form.first_name
+        %}
+      </div>
+      <div class='w-full mb-4'>
+        {% capture last_name_label %}{{ 'labels.last_name' | t }}{% endcapture %}
+        {%
+          render 'addresses__input',
+          required: 'true',
+          label: last_name_label,
+          placeholder: last_name_label,
+          name: 'address[last_name]',
+          value: form.last_name
+        %}
+      </div>
+  
+      <div class='w-full mb-4'>
+        {% capture company_label %}{{ 'labels.company' | t }}{% endcapture %}
+        {%
+          render 'addresses__input',
+          label: company_label,
+          placeholder: company_label,
+          name: 'address[company]',
+          value: form.company
+        %}
+      </div>
+      <div class='w-full mb-4'>
+        {% capture phone_label %}{{ 'labels.phone' | t }}{% endcapture %}
+        {%
+          render 'addresses__input',
+          label: phone_label,
+          placeholder: phone_label,
+          name: 'address[phone]',
+          value: form.phone,
+          type: 'tel'
+        %}
+      </div>
+  
+      <div class='w-full mb-4'>
+        {% capture address_label %}{{ 'labels.address' | t }}{% endcapture %}
+        {%
+          render 'addresses__input',
+          required: 'true',
+          label: address_label,
+          placeholder: mb,
+          name: 'address[address1]',
+          value: form.address1
+        %}
+      </div>
+      <div class='w-full mb-4'>
+        {% capture address_2_label %}{{ 'labels.address2' | t }}{% endcapture %}
+        {%
+          render 'addresses__input',
+          label: address_2_label,
+          placeholder: address_2_label,
+          name: 'address[address2]',
+          value: form.address2
+        %}
+      </div>
+  
+      <div class='w-full mb-4'>
+        {% capture city_label %}{{ 'labels.city' | t }}{% endcapture %}
+        {%
+          render 'addresses__input',
+          required: 'true',
+          label: city_label,
+          placeholder: city_label,
+          name: 'address[city]',
+          value: form.city
+        %}
+      </div>
+      <div class='w-full mb-4'>
+        {% capture zip_label %}{{ 'labels.zip' | t }}{% endcapture %}
+        {%
+          render 'addresses__input',
+          label: zip_label,
+          placeholder: zip_label,
+          name: 'address[zip]',
+          value: form.zip
+        %}
+      </div>
+  
+      <div class='w-full mb-4'>
+        {% capture attr %}
+        data-default="{{ form.country }}"
+        {% endcapture %}
+        {% capture country_label %}{{ 'labels.country' | t }}{% endcapture %}
+        {%
+          render 'addresses__select',
+          label: country_label,
+          placeholder: country_label,
+          id: form_country_id,
+          name: 'address[country]',
+          options: country_option_tags,
+          attributes: attr
+        %}
+      </div>
+      <div class='w-full mb-4' id="{{ 'provinceContainer' | append: form_suffix }}">
+        {% capture attr %}
+          data-default="{{ form.province }}"
+        {% endcapture %}
+        {% capture region_label %}{{ 'labels.region' | t }}{% endcapture %}
+        {%
+          render 'addresses__select',
+          label: region_label,
+          placeholder: region_label,
+          id: form_province_id,
+          name: 'address[province]',
+          options: '',
+          attributes: attr
+        %}
+      </div>
+  
+      <label class='flex items-center mb-4'>
+        {{ form.set_as_default_checkbox }}
+        <span class='inline-block ml-2'>{{ 'actions.set_default_address' | t }}</span>
+      </label>
+    </div>
+    
+    <div class="sticky bottom-0 w-full p-4 color__bg-body color__text border--t-width color__border-divider-1">
+      <button 
+        class="mr-2 btn" 
+        name="" 
+        type="submit" 
+        role="button">
+        {{ cta }}
+      </button>
+      <button 
+        class="btn btn--plain"
+        name="" 
+        type="button"
+        role="button"
+        @click="popup = false;">
+        {{ 'actions.cancel' | t }}
+      </button>
+    </div>
+
+  {% endform %}
+
+  <script type="module">
+    (function(){
+      var countrySelector = document.getElementById({{ form_country_id | json }})
+      var provinceSelector = document.getElementById({{ form_province_id | json }})
+      var provinceContainer = document.getElementById({{ form_province_container_id | json }})
+      var countryDefault = countrySelector.getAttribute('data-default') ? countrySelector.getAttribute('data-default') : countrySelector.options[0].value
+      var provinceDefault = provinceSelector.getAttribute('data-default')
+    
+      /**
+       * Select an option within a <select>
+       * based on a given value
+       *
+       * @param {string} value Value to search for
+       * @param {element} select <select> element
+       * @return {element} The first matching select option
+       */
+      function selectOption(value, select){
+        return Array.prototype.slice.call(select.options).filter(function(option, i){
+          if (option.value === value){
+            select.selectedIndex = i
+            return true
+          }
+          return false
+        })[0]
+      }
+    
+      /**
+       * Generate province options and show select element
+       *
+       * @param {array} options Array of arrays from selected country
+       */
+      function showProvinces(options){
+        var previousValue = provinceSelector.options[0] ? provinceSelector.options[0].value : false
+        var isNewValue = !previousValue || options[0][0] !== previousValue ? true : false
+    
+        if (isNewValue){
+          // Emptry provinces select
+          provinceSelector.innerHTML = ''
+    
+          // Generate new options from values
+          for (var i = 0; i < options.length; i++){
+            var option = document.createElement('option')
+            option.value = options[i][0]
+            option.innerHTML = options[i][1]
+            provinceSelector.appendChild(option)
+          }
+        }
+    
+        // Select the default province
+        if (provinceDefault.length > 0) selectOption(provinceDefault, provinceSelector)
+    
+        // Show provinces
+        provinceContainer.style.display = 'block'
+      }
+    
+      /**
+       * Hide provinces container
+       */
+      function hideProvinces(){
+        provinceContainer.style.display = 'none'
+      }
+    
+      /**
+       * If we have an active default country,
+       * select it and select it's default province
+       *
+       * (this is for the edit form)
+       */
+      function selectDefaults(){
+        if (countryDefault.length < 1) return
+    
+        var selectedCountry = selectOption(countryDefault, countrySelector)
+        var options = JSON.parse(selectedCountry.getAttribute('data-provinces'))
+    
+        showProvinces(options)
+      }
+    
+      /**
+       * Get selected country, read it's
+       * provinces, and toss them into the
+       * provinces selector
+       */
+      countrySelector.onchange = function(){
+        var selectedCountry = countrySelector.options[countrySelector.selectedIndex]
+        var options = JSON.parse(selectedCountry.getAttribute('data-provinces')) || []
+        options.length > 0 ? showProvinces(options) : hideProvinces()
+      }
+      
+      selectDefaults()
+    })()
+  </script>
+    
+</div>

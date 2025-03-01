@@ -1,0 +1,112 @@
+<!-- snippets/product__pickup-button.liquid -->
+{% comment %} 
+  Block to display local pickup availability.
+
+  Accepts:
+  - blocksettings: {object} Liquid object of block settings.
+  
+  Globals:
+  - type_seperator: {string} Class string to set type of separator (dot or pipe).
+  - close_button_color: {string} Class string to set color of close button.
+  - close_button_content: {string} Content to be displayed on close button.
+
+  Usage:
+    {% render 'product__pickup-button', 
+      block: block 
+    %}  
+      
+  Recommendations:
+  - Ensure locations and availability have been setup with pickup locations.
+{% endcomment %}
+
+{% liquid 
+  assign pick_up_availabilities = product.selected_or_first_available_variant.store_availabilities | where: 'pick_up_enabled', true 
+  assign pick_up_availabilities_in_stock = pick_up_availabilities | where: 'available', true 
+  assign closest_location = pick_up_availabilities.first 
+  if featured 
+    assign product = section.settings.product
+  endif
+%}
+
+{% if product.available and pick_up_availabilities_in_stock.size > 0 and pick_up_availabilities.size > 0 %}
+  <div 
+    id="product-pickup"
+    class="
+      js-pickup px-4
+      {{ block.settings.color_scheme }}
+      {{ block.settings.color_border }}
+      {{ block.settings.style_border }}
+    "
+    style="
+      padding-top:{{ block.settings.spacing_top }}px;
+      padding-bottom:{{ block.settings.spacing_bottom }}px;
+    ">
+    {% if pick_up_availabilities.size > 0 %}
+      <div 
+        x-show="current_variant_available">
+
+        {% comment %} Pickup summary {% endcomment %}
+        {% if closest_location.available == false %}
+          <div 
+            class="flex gap-2 cursor-pointer"
+            @click="
+              drawer_{{ block.id }} = true; 
+              has_overlay = true;
+            ">
+            <div>{% render 'component__icon', icon: 'map-pin', size: '24' %}</div>
+            <div>
+              <strong>{{ closest_location.location.name }}</strong>
+              <p class="type--small">{% render 'component__icon', icon: 'x', size: '20', class: 'mr-1' %} {{ 'info.out_of_stock' | t }}</p>
+              <p class="type--small">{% render 'component__icon', icon: 'check', size: '20', class: 'mr-1' %} {{ closest_location.pick_up_time }}</p>
+
+              {% comment %} Button - open drawer {% endcomment %}
+              <button 
+                class="mt-2 btn btn--smaller btn--plain"
+                type="button" 
+                aria-haspopup="dialog">
+                {% if pick_up_availabilities.size == 1 %}
+                  {{ 'actions.view_store_info' | t }}
+                {% elsif closest_location.available == false %}
+                  {{ 'actions.check_availability_at_stores' | t }}
+                {% else %}
+                  {{ 'actions.view_all' | t }}
+                {% endif %}
+              </button>
+            </div>
+          </div>
+        {% else %}
+          <div 
+            class="flex gap-2 cursor-pointer"
+            @click="
+              drawer_{{ block.id }} = true; 
+
+              has_overlay = true;
+            ">
+            <div>{% render 'component__icon', icon: 'store', size: '24' %}</div>
+            <div>
+              <strong>{{ closest_location.location.name }}</strong>
+              <p class="type--small">{% render 'component__icon', icon: 'check', size: '20', class: 'mr-1' %} {{ 'info.available_for_pickup' | t }}</p>
+              <p class="type--small">{% render 'component__icon', icon: 'check', size: '20', class: 'mr-1' %} {{ closest_location.pick_up_time }}</p>
+
+              {% comment %} Button - open drawer {% endcomment %}
+              <button 
+                class="mt-2 btn btn--smaller btn--plain"
+                type="button" 
+                aria-haspopup="dialog">
+                {% if pick_up_availabilities.size == 1 %}
+                  {{ 'actions.view_store_info' | t }}
+                {% elsif closest_location.available == false %}
+                  {{ 'actions.check_availability_at_stores' | t }}
+                {% else %}
+                  {{ 'actions.view_all' | t }}
+                {% endif %}
+              </button>
+            </div>
+          </div>
+        {% endif %}
+
+      </div>
+    {% endif %}
+  </div>
+{% endif %}
+  

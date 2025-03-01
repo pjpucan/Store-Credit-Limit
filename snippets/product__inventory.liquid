@@ -1,0 +1,77 @@
+<!-- snippets/product__inventory.liquid -->
+{% comment %} 
+  This snippet is used to display the inventory levels of a product. It counts the total stock for all variants of the product and displays a notification if the quantity is below a certain threshold. The threshold can be set in the block settings.
+
+  Accepts:
+  - blocksettings: {object} Liquid object of block settings.
+  - is_featured: {boolean} Set to true if block is used within a section rather than product template. This will assign product object from section settings.
+  
+  Usage:
+    {% render 'product__inventory', 
+      block: block, 
+      is_featured: true 
+    %}
+
+  Recommendations:
+    - Use this snippet to display inventory levels in a clear and concise manner.
+    - Consider adjusting the threshold based on your store's inventory turnover rate.
+{% endcomment %}
+
+{% if is_featured %}
+
+  {% comment %} Set product based on section settings {% endcomment %}
+  {% assign product = section.settings.product %}
+
+  {% comment %} Set placeholder product if blank {% endcomment %}
+  {% if request.design_mode and product == null  %}
+    {% for product in collections['all'].products limit:1 %}
+      {% assign product = product %}
+    {% endfor %}
+  {% endif %}
+
+{% endif %}
+
+{% assign product_qty = 0 %}
+{% for variant in product.variants %}
+  {% if variant.inventory_quantity > 0 %}
+    {% assign product_qty = product_qty | plus: variant.inventory_quantity %}
+  {% endif %}
+{% endfor %}
+
+{% if product_qty < block.settings.threshold %}
+  <div 
+    id="product-inventory"
+    class="
+      px-4
+      {{ block.settings.color_scheme }}
+      {{ block.settings.color_border }}
+      {{ block.settings.style_border }}
+    "
+    style="
+      padding-top:{{ block.settings.spacing_top }}px;
+      padding-bottom:{{ block.settings.spacing_bottom }}px;
+    ">
+    <div class="relative">
+      
+      {% comment %} Animate pulse dot {% endcomment %}
+      <span class="inline-flex w-3 h-3 mr-2">
+        <span class="absolute inline-flex w-3 h-3 rounded-full animate-ping color__bg-primary"></span>
+        <span class="inline-flex w-3 h-3 rounded-full color__bg-primary"></span>
+      </span>
+
+      {% comment %} Content {% endcomment %}
+      <span>
+        {% if product_qty > 0 %}
+          {{ 'labels.only' | t }} {{ product_qty }}  {{ 'info.in_stock' | t | downcase }}
+        {% else %}
+          {% if product.available %}
+            {{ 'labels.available' | t }}
+          {% else %}
+            {{ 'labels.sold_out' | t }}
+          {% endif %}
+        {% endif %}
+      </span>
+      
+    </div>
+  </div>
+{% endif %}

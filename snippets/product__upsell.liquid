@@ -1,0 +1,147 @@
+<!-- snippets/product__upsell.liquid -->
+{% comment %} 
+  Summary:
+    This snippet is used to display upsell products within a product block loop. It fetches product recommendations based on the product id and displays them in a section. The number of recommendations and the intent can be set in the block settings.
+
+  Accepts:
+  - blocksettings: {object} Liquid object of block settings.
+
+  Usage:
+    {% render 'product__upsell', 
+      block: block 
+    %}
+
+  Possible enhancements: 
+  - Fix for duplicate IDs - quantity
+
+  Recommendations:
+  - Use the Search and Discovery app to update and set custom upsells.
+  - Upsells can be set to related or complimentary products.
+{% endcomment %}
+
+<div 
+  id="product-upsell"
+  class="
+    px-4
+    {{ block.settings.color_border }}
+    {{ block.settings.style_border }}
+  "
+  style="
+    padding-top:{{ block.settings.spacing_top }}px;
+    padding-bottom:{{ block.settings.spacing_bottom }}px;
+  "
+  x-data="{
+    initialLoad: true,
+    button_loading: false,
+    complementary_products: [],
+
+    getRecomendations(){
+      fetch(
+        window.Shopify.routes.root + 
+        'recommendations/products.json?product_id={{ product.id }}&limit={{ block.settings.products_count }}&intent={{ block.settings.intent }}'
+      )
+      .then(response => response.json())
+      .then(({ products }) => {
+        if (products.length > 0) {
+          this.complementary_products = products;
+          this.initialLoad = false;
+        }
+      });
+    }
+
+  }">
+
+  {% comment %} Placeholder upsells {% endcomment %}
+  <div 
+    x-show="initialLoad && {{ block.settings.products_count }} > 0">
+    {% capture content %}
+      <div 
+        class="
+          grid
+          md:grid-cols-{{ block.settings.layout_row_desktop }}
+          grid-cols-{{ block.settings.layout_row_mobile }}
+        " 
+        style="gap: {{ settings.gap_size }}px;">
+        {% for i in (1..block.settings.products_count) %}
+          {% if block.settings.style_upsell == 'grid' %}
+            {% render 'component__skeleton-grid' %}
+          {% else %}
+            {% render 'component__skeleton-stack' %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endcapture %}
+    
+    {% if block.settings.enable_accordion %}
+      {% assign is_button = true %}
+      {% if block.settings.color_scheme == 'minimal' %}
+        {% assign is_button = false %}
+      {% endif %}
+      
+      {% render 'component__accordion',
+        container_class: '',
+        inner_class: '',
+        button_class: block.settings.color_scheme,
+        button_label: block.settings.title,
+        content: content,
+        is_button: is_button,
+        enable_open: block.settings.enable_open,
+      %}
+    {% else %}
+      {{ content }}
+    {% endif %}
+  </div>
+
+  {% comment %} Active upsells {% endcomment %}
+  <div 
+    x-init="getRecomendations();" 
+    x-show="!initialLoad && complementary_products.length > 0" 
+    x-cloak>
+    {% capture content %}
+      <div 
+        class="
+          grid
+          md:grid-cols-{{ block.settings.layout_row_desktop }}
+          grid-cols-{{ block.settings.layout_row_mobile }}
+        " 
+        style="gap: {{ settings.gap_size }}px;">
+        {% if block.settings.style_upsell == 'grid' %}
+          <template x-for="(item, index) in complementary_products">
+            {% render 'template__product-grid' %}
+          </template>
+        {% else %}
+          <template x-for="(item, index) in complementary_products">
+            {% render 'template__product-stack' %}
+          </template>
+        {% endif %}
+      </div>
+    {% endcapture %}
+    
+    {% if block.settings.enable_accordion %}
+      {% assign is_button = true %}
+      {% if block.settings.color_scheme == 'minimal' %}
+        {% assign is_button = false %}
+      {% endif %}
+      
+      {% capture button_classes %}
+        {{ block.settings.color_scheme }}
+        {% unless is_button %}
+          pt-4
+        {% endunless %}
+      {% endcapture %}
+      
+      {% render 'component__accordion',
+        container_class: '',
+        inner_class: '',
+        button_class: button_classes,
+        button_label: block.settings.title,
+        content: content,
+        is_button: is_button,
+        enable_open: block.settings.enable_open,
+      %}
+    {% else %}
+      {{ content }}
+    {% endif %}
+  </div>
+
+</div>

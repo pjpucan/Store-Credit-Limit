@@ -1,0 +1,56 @@
+<!-- snippets/product__accordion.liquid -->
+{% comment %} 
+  Accordion block for product sections.
+  
+  Accepts:
+  - blocksettings: {object} Liquid object of block settings.
+  
+  Usage:
+    {% render 'product__accordion', 
+      block: block 
+    %}
+  
+  Recommendations:
+  - Create and use metafields to display additional product data here.
+{% endcomment %}
+
+{% capture accordion_label %}
+  {% unless block.settings.icon == blank %}
+    {% render 'component__icon', icon: block.settings.icon, size: '24', class: 'mr-2' %}
+  {% endunless %}
+  {{ block.settings.title }}
+{% endcapture %}
+
+{% assign is_button = true  %}
+{% if block.settings.color_scheme == 'minimal' %}
+  {% assign is_button = false %}
+{% endif %}
+
+{% capture button_classes %}
+{{ block.settings.color_scheme }}
+{% unless is_button %}
+  pt-4
+{% endunless %}
+{% endcapture %}
+
+<div 
+  id="product-accordion"
+  class="
+    px-4
+    {{ block.settings.color_border }}
+    {{ block.settings.style_border }}
+  "
+  style="
+    padding-top:{{ block.settings.spacing_top }}px;
+    padding-bottom:{{ block.settings.spacing_bottom }}px;
+  ">
+  {% render 'component__accordion', 
+    container_class: '',
+    inner_class: '',
+    button_class: button_classes,
+    button_label: accordion_label, 
+    content: block.settings.content,
+    is_button: is_button,
+    enable_open: block.settings.enable_open
+  %}
+</div>

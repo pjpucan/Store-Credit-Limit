@@ -1,0 +1,54 @@
+<!-- snippets/product__custom-field.liquid -->
+{% comment %} 
+  This snippet is used to create a custom field for a product. It includes a label and an input field. The label and input field can be customized through the block settings. The input field has a keyup event listener that triggers a function to check line items.
+
+  Accepts:
+  - blocksettings: {object} Liquid object of block settings.
+  - is_featured: {boolean} Set to true if block is used within a section rather than product template. This will assign product object from section settings.
+
+  Usage:
+    {% render 'product__custom-field', 
+      block: block, 
+      is_featured: true 
+    %}
+
+  Recommendations:
+  - Use this snippet to add custom fields to your product pages.
+{% endcomment %}
+
+{% if is_featured %}
+
+  {% comment %} Set product based on section settings {% endcomment %}
+  {% assign product = section.settings.product %}
+
+  {% comment %} Set placeholder product if blank {% endcomment %}
+  {% if request.design_mode and product == null  %}
+    {% for product in collections['all'].products limit:1 %}
+      {% assign product = product %}
+    {% endfor %}
+  {% endif %}
+
+{% endif %}
+
+<div 
+  id="product-custom-field"
+  class="
+    px-4
+    {{ block.settings.color_scheme }}
+    {{ block.settings.color_border }}
+    {{ block.settings.style_border }}
+  "
+  style="
+    padding-top:{{ block.settings.spacing_top }}px;
+    padding-bottom:{{ block.settings.spacing_bottom }}px;
+  ">
+  <label 
+    class="flex mb-2 opacity-75 type--smaller"
+    for="custom-{{ block.settings.field_label }}">
+    {{ block.settings.field_label }} {% if block.settings.required_field %} *{% endif %} 
+  </label>
+  <input 
+    id="custom-{{ block.settings.field_label }}" 
+    name="properties[{{ block.settings.field_label }}]"
+    type="text">
+</div>
