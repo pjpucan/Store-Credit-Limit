@@ -1,0 +1,16 @@
+@charset "utf-8";
+
+/* Variables (should be on top, contains overrides) */
+//@use "common/variables";
+@use 'common/root-custom-properties';
+//@use "common/mixins";
+//@use 'common/fonts';
+//@use "util/functions";
+
+
+// Global Styles
+@use 'common/global';
+
+// Partials
+@use "partials/header";
+@use "partials/footer";

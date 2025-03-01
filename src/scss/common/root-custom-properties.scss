@@ -1,0 +1,37 @@
+@use '../common/fonts'; // Fonts
+@import "../util/px-to-rem.scss"; // Function to Convert PX to REM
+
+:root {
+    // Theme Color
+    --primary-color:      #33425e;
+    --secondary-color:    #f5f2ed;
+    --tertiary-color:     #425C59;
+  
+    --black:              #000;
+    --white:              #fff;
+    --red:                #ff3860;
+    --blue:               #044cb4;
+    --green:              #25b900;
+    --yellow:             #fdda8b;
+
+    --neutral-color:      #dddad4;
+    --light-color:        #f1f1f1;
+
+    --success-color:      var(--green);
+    --error-color:        var(--red);
+    --focus-color:        #17181a;
+
+    // Main Fonts
+  --font-apercu: "ApercuPro";
+
+  // Fallback Fonts
+  --font-tahoma: "Tahoma"; //Fallback for Apercu
+  --font-helvetica: "Helvetica"; //Fallback for DinNueue
+  --font-timesnewroman: "Times New Roman"; //Fallback for MenoDisplay
+
+  --font-body-content: var(--font-apercu), var(--font-tahoma);
+  --font-body-header: var(--font-apercu), var(--font-tahoma);
+
+  // Font Size
+  --font-size-default: #{toRem(16px)};
+}

@@ -1,0 +1,38 @@
+{
+  "name": "store_credit_limit",
+  "version": "1.0.0",
+  "description": "Store Credit Limit Theme",
+  "author": "PJ Pucan",
+  "license": "ISC",
+  "main": "webpack.mix.js",
+  "engines": {
+    "npm": "10.9.2",
+    "node": "2.13.0"
+  },
+  "scripts": {
+    "theme": "shopify theme dev --store iskroo --theme-editor-sync",
+    "watch": "npx mix watch -- --watch-options-poll=1000",
+    "webpack:build": "npx mix --production",
+    "dev": "npx mix",
+    "hot": "npx mix watch --hot",
+    "prod": "npx mix --production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pjpucan/Store-Credit-Limit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/pjpucan/Store-Credit-Limit/issues"
+  },
+  "homepage": "https://github.com/pjpucan/Store-Credit-Limit#readme",
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "cross-env": "^7.0.3",
+    "laravel-mix": "^6.0.49",
+    "laravel-mix-purgecss": "^6.0.0",
+    "npm-run-all": "^4.1.5",
+    "sass": "^1.72.0",
+    "sass-loader": "^12.6.0",
+    "webpack": "^5.91.0"
+  }
+}

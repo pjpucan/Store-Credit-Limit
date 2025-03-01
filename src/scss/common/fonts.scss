@@ -1,0 +1,54 @@
+// ApercuPro Regular
+@font-face {
+    font-family: 'ApercuPro';
+    src: url('Font-ApercuPro-Regular.eot');
+    src: url('Font-ApercuPro-Regular.eot?#iefix') format('embedded-opentype'),
+         url('Font-ApercuPro-Regular.woff2') format('woff2'),
+         url('Font-ApercuPro-Regular.woff') format('woff'),
+         url('Font-ApercuPro-Regular.ttf') format('truetype'),
+         url('Font-ApercuPro-Regular.svg#ApercuPro-Regular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+// ApercuPro Medium
+@font-face {
+    font-family: 'ApercuPro';
+    src: url('Font-ApercuPro-Medium.eot');
+    src: url('Font-ApercuPro-Medium.eot?#iefix') format('embedded-opentype'),
+         url('Font-ApercuPro-Medium.woff2') format('woff2'),
+         url('Font-ApercuPro-Medium.woff') format('woff'),
+         url('Font-ApercuPro-Medium.ttf') format('truetype'),
+         url('Font-ApercuPro-Medium.svg#ApercuPro-Medium') format('svg');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+// ApercuPro Light
+@font-face {
+    font-family: 'ApercuPro';
+    src: url('Font-ApercuPro-Light.eot');
+    src: url('Font-ApercuPro-Light.eot?#iefix') format('embedded-opentype'),
+         url('Font-ApercuPro-Light.woff2') format('woff2'),
+         url('Font-ApercuPro-Light.woff') format('woff'),
+         url('Font-ApercuPro-Light.ttf') format('truetype'),
+         url('Font-ApercuPro-Light.svg#ApercuPro-Light') format('svg');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'ApercuPro';
+    src: url('Font-ApercuPro-Bold.eot');
+    src: url('Font-ApercuPro-Bold.eot?#iefix') format('embedded-opentype'),
+        url('Font-ApercuPro-Bold.woff2') format('woff2'),
+        url('Font-ApercuPro-Bold.woff') format('woff'),
+        url('Font-ApercuPro-Bold.ttf') format('truetype'),
+        url('Font-ApercuPro-Bold.svg#ApercuPro-Bold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
