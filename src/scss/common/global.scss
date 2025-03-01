@@ -1,0 +1,10 @@
+@import "../util/px-to-rem"; // Function to Convert PX to REM
+@import "../mixins/breakpoints"; // Responsive Mixins
+
+/*
+  Global Styles 
+ ------------------------------------------------------ */
+
+body {
+    font-family: var(--font-body-content);
+}
