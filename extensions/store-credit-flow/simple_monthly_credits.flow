@@ -1,0 +1,49 @@
+{
+  "workflow": {
+    "name": "Simple Monthly Credit Activation",
+    "description": "Moves pending credits to active credits at the start of each month",
+    "trigger": {
+      "type": "schedule",
+      "properties": {
+        "schedule": {
+          "interval": "month",
+          "day": "first",
+          "time": "00:01"
+        }
+      }
+    },
+    "conditions": [],
+    "actions": [
+      {
+        "type": "filter_customers",
+        "properties": {
+          "filter": "tag:has-pending-credits"
+        }
+      },
+      {
+        "type": "update_customer_metafield",
+        "properties": {
+          "namespace": "customer",
+          "key": "store_credits",
+          "value_type": "number_decimal",
+          "value": "{{customer.metafield.customer.store_credits | default: 0 | plus: customer.metafield.customer.pending_credits | default: 0}}"
+        }
+      },
+      {
+        "type": "update_customer_metafield",
+        "properties": {
+          "namespace": "customer",
+          "key": "pending_credits",
+          "value_type": "number_decimal",
+          "value": "0"
+        }
+      },
+      {
+        "type": "remove_customer_tags",
+        "properties": {
+          "tags": ["has-pending-credits"]
+        }
+      }
+    ]
+  }
+}

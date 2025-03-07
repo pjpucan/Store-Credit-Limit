@@ -1,0 +1,55 @@
+{
+  "workflows": [
+    {
+      "name": "Calculate Monthly Store Credits",
+      "description": "Calculates monthly rebate credits for customers based on their spending",
+      "trigger": {
+        "type": "schedule",
+        "schedule": {
+          "interval": "month",
+          "day": "last",
+          "time": "23:59"
+        }
+      },
+      "conditions": [],
+      "actions": [
+        {
+          "type": "shopify_action",
+          "action": "run_script",
+          "script": {
+            "script_tag": "calculate_monthly_credits"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Add Credits After Order",
+      "description": "Adds rebate credits to customer account after order is paid",
+      "trigger": {
+        "type": "shopify_event",
+        "event": "order.paid"
+      },
+      "conditions": [
+        {
+          "type": "shopify_condition",
+          "condition": "order.customer_exists",
+          "value": true
+        }
+      ],
+      "actions": [
+        {
+          "type": "shopify_action",
+          "action": "run_script",
+          "script": {
+            "script_tag": "add_order_credits",
+            "parameters": {
+              "order_id": "{{order.id}}",
+              "customer_id": "{{order.customer.id}}",
+              "order_total": "{{order.total_price}}"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

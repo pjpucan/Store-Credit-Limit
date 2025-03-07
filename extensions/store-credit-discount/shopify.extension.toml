@@ -1,0 +1,46 @@
+# Name of your extension
+name = "Store Credit Discount"
+
+# Type of extension
+type = "function"
+
+# Shopify API version
+api_version = "2024-01"
+
+# Capabilities required by the extension
+[[extensions]]
+handle = "store-credit-discount"
+name = "Store Credit Discount"
+description = "Applies store credits as a discount at checkout"
+type = "function"
+
+  [[extensions.targeting]]
+  target = "purchase.function.discount"
+  input_query = '''
+  {
+    cart {
+      buyerIdentity {
+        customer {
+          id
+          metafield(namespace: "customer", key: "store_credits") {
+            value
+          }
+          metafield(namespace: "customer", key: "credit_history") {
+            value
+          }
+        }
+      }
+      cost {
+        subtotalAmount {
+          amount
+          currencyCode
+        }
+      }
+    }
+    discountNode {
+      metafield(namespace: "discount", key: "function-configuration") {
+        value
+      }
+    }
+  }
+  '''
