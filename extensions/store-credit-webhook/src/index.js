@@ -27,19 +27,19 @@ function calculateRebatePercentage(monthlyRevenue) {
 /**
  * Process order and update customer metafields
  * @param {string} shopDomain Shopify shop domain
- * @param {string} accessToken Access token for API
  * @param {Object} orderData Order data
+ * @param {Object} context Shopify function context
  */
-async function processOrder(shopDomain, accessToken, orderData) {
+async function processOrder(shopDomain, orderData, context) {
   try {
     // Get customer metafields
-    const customerMetafields = await getCustomerMetafields(shopDomain, accessToken, orderData.customerId);
+    const customerMetafields = await getCustomerMetafields(shopDomain, orderData.customerId, context);
     
     // Process the order and update metafields
     const updatedMetafields = calculateUpdatedMetafields(customerMetafields, orderData);
     
     // Update customer metafields
-    await updateCustomerMetafields(shopDomain, accessToken, orderData.customerId, updatedMetafields);
+    await updateCustomerMetafields(shopDomain, orderData.customerId, updatedMetafields, context);
   } catch (error) {
     console.error('Error processing order:', error);
     throw error;
@@ -47,13 +47,13 @@ async function processOrder(shopDomain, accessToken, orderData) {
 }
 
 /**
- * Get customer metafields
+ * Get customer metafields using Shopify's built-in authentication
  * @param {string} shopDomain Shopify shop domain
- * @param {string} accessToken Access token for API
  * @param {string} customerId Customer ID
+ * @param {Object} context Shopify function context
  * @returns {Promise<Array>} Customer metafields
  */
-async function getCustomerMetafields(shopDomain, accessToken, customerId) {
+async function getCustomerMetafields(shopDomain, customerId, context) {
   const query = `
     query GetCustomerMetafields($customerId: ID!) {
       customer(id: $customerId) {
@@ -75,11 +75,12 @@ async function getCustomerMetafields(shopDomain, accessToken, customerId) {
     customerId: `gid://shopify/Customer/${customerId}`,
   };
 
+  // Use the Shopify Admin API with the context's admin token
   const response = await fetch(`https://${shopDomain}/admin/api/2023-10/graphql.json`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-Shopify-Access-Token': accessToken,
+      'X-Shopify-Access-Token': context.admin.accessToken,
     },
     body: JSON.stringify({
       query,
@@ -201,31 +202,31 @@ function calculateUpdatedMetafields(existingMetafields, orderData) {
 }
 
 /**
- * Update customer metafields
+ * Update customer metafields using Shopify's built-in authentication
  * @param {string} shopDomain Shopify shop domain
- * @param {string} accessToken Access token for API
  * @param {string} customerId Customer ID
  * @param {Array} metafields Metafields to update
+ * @param {Object} context Shopify function context
  */
-async function updateCustomerMetafields(shopDomain, accessToken, customerId, metafields) {
+async function updateCustomerMetafields(shopDomain, customerId, metafields, context) {
   for (const metafield of metafields) {
     if (metafield.id) {
       // Update existing metafield
-      await updateMetafield(shopDomain, accessToken, metafield);
+      await updateMetafield(shopDomain, metafield, context);
     } else {
       // Create new metafield
-      await createMetafield(shopDomain, accessToken, customerId, metafield);
+      await createMetafield(shopDomain, customerId, metafield, context);
     }
   }
 }
 
 /**
- * Update existing metafield
+ * Update existing metafield using Shopify's built-in authentication
  * @param {string} shopDomain Shopify shop domain
- * @param {string} accessToken Access token for API
  * @param {Object} metafield Metafield to update
+ * @param {Object} context Shopify function context
  */
-async function updateMetafield(shopDomain, accessToken, metafield) {
+async function updateMetafield(shopDomain, metafield, context) {
   const mutation = `
     mutation MetafieldUpdate($input: MetafieldUpdateInput!) {
       metafieldUpdate(input: $input) {
@@ -251,7 +252,7 @@ async function updateMetafield(shopDomain, accessToken, metafield) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-Shopify-Access-Token': accessToken,
+      'X-Shopify-Access-Token': context.admin.accessToken,
     },
     body: JSON.stringify({
       query: mutation,
@@ -261,13 +262,13 @@ async function updateMetafield(shopDomain, accessToken, metafield) {
 }
 
 /**
- * Create new metafield
+ * Create new metafield using Shopify's built-in authentication
  * @param {string} shopDomain Shopify shop domain
- * @param {string} accessToken Access token for API
  * @param {string} customerId Customer ID
  * @param {Object} metafield Metafield to create
+ * @param {Object} context Shopify function context
  */
-async function createMetafield(shopDomain, accessToken, customerId, metafield) {
+async function createMetafield(shopDomain, customerId, metafield, context) {
   const mutation = `
     mutation MetafieldCreate($input: MetafieldInput!) {
       metafieldCreate(metafield: $input) {
@@ -296,7 +297,7 @@ async function createMetafield(shopDomain, accessToken, customerId, metafield) {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-Shopify-Access-Token': accessToken,
+      'X-Shopify-Access-Token': context.admin.accessToken,
     },
     body: JSON.stringify({
       query: mutation,
@@ -307,14 +308,13 @@ async function createMetafield(shopDomain, accessToken, customerId, metafield) {
 
 /**
  * Main webhook handler for orders/paid event
+ * Uses Shopify's built-in authentication through the function context
  */
-exports.onOrderPaid = async (topic, shop, body, webhookId, apiVersion) => {
+exports.onOrderPaid = async (topic, shop, body, webhookId, apiVersion, context) => {
   try {
-    // Get admin API access token from environment variables
-    const accessToken = process.env.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;
-    
-    if (!accessToken) {
-      throw new Error('Missing Shopify API access token');
+    // Validate that we have the necessary context and data
+    if (!context || !context.admin || !context.admin.accessToken) {
+      throw new Error('Missing Shopify admin context');
     }
     
     if (body && body.customer && body.id && body.total_price && body.processed_at) {
@@ -325,10 +325,24 @@ exports.onOrderPaid = async (topic, shop, body, webhookId, apiVersion) => {
         processedAt: body.processed_at,
       };
       
-      await processOrder(shop, accessToken, orderData);
+      await processOrder(shop, orderData, context);
+      
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ success: true }),
+      };
     }
+    
+    return {
+      statusCode: 400,
+      body: JSON.stringify({ error: 'Invalid order data' }),
+    };
   } catch (error) {
     console.error('Webhook handler error:', error);
-    throw error;
+    
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'Internal server error' }),
+    };
   }
 };
