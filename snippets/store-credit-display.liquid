@@ -1,0 +1,71 @@
+{% comment %}
+  Store Credit Display Snippet
+  
+  This snippet displays the customer's available store credits and provides information
+  about how they can be used during checkout.
+  
+  Usage:
+  {% render 'store-credit-display' %}
+{% endcomment %}
+
+{% if customer %}
+  <div class="store-credit-container">
+    <div class="store-credit-display">
+      Available Store Credits: Loading...
+    </div>
+    
+    <div class="store-credit-info">
+      <details>
+        <summary>About Store Credits</summary>
+        <div class="store-credit-details">
+          <p>Store credits are earned based on your purchase history:</p>
+          <ul>
+            <li>Spend $10,000+ per month: Earn 2% back in store credits</li>
+            <li>Spend $20,000+ per month: Earn 3.5% back in store credits</li>
+            <li>Spend $50,000+ per month: Earn 4% back in store credits</li>
+          </ul>
+          <p><strong>Important:</strong></p>
+          <ul>
+            <li>Credits can only be used up to 20% of your purchase total</li>
+            <li>Credits earned in the current month can only be used in future months</li>
+            <li>Your credits never expire</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <style>
+    .store-credit-container {
+      margin: 20px 0;
+      padding: 15px;
+      border: 1px solid #e8e8e8;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    
+    .store-credit-display {
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 10px;
+    }
+    
+    .store-credit-info summary {
+      cursor: pointer;
+      color: #555;
+      font-size: 14px;
+    }
+    
+    .store-credit-details {
+      margin-top: 10px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    
+    .store-credit-details ul {
+      margin-left: 20px;
+      margin-bottom: 15px;
+    }
+  </style>
+{% endif %}

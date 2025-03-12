@@ -1,0 +1,18 @@
+{
+  "name": "store-credit-webhook",
+  "version": "1.0.0",
+  "description": "Shopify webhook for processing orders and updating store credits",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "shopify app function build",
+    "deploy": "shopify app function deploy",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@shopify/shopify-api": "^7.5.0"
+  },
+  "devDependencies": {
+    "@shopify/app": "^3.46.0",
+    "@shopify/cli": "^3.46.0"
+  }
+}

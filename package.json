@@ -10,7 +10,7 @@
     "node": "2.13.0"
   },
   "scripts": {
-    "theme": "shopify theme dev --store iskroo --theme-editor-sync",
+    "theme": "shopify theme dev --store dummystore-pp-test --theme-editor-sync",
     "watch": "npx mix watch -- --watch-options-poll=1000",
     "webpack:build": "npx mix --production",
     "dev": "npx mix",

@@ -1,0 +1,11 @@
+name = "Store Credit Webhook"
+type = "webhook"
+api_version = "2023-10"
+
+[build]
+command = "npm run build"
+path = "dist/index.js"
+
+[[webhooks]]
+topic = "orders/create"
+uri = "/webhooks/orders/create"

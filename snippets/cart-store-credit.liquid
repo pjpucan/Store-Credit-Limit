@@ -1,0 +1,88 @@
+{% comment %}
+  Cart Store Credit Display
+  
+  This snippet displays the customer's available store credits on the cart page
+  and provides information about how they can be used during checkout.
+  
+  Usage:
+  {% render 'cart-store-credit' %}
+{% endcomment %}
+
+{% if customer %}
+  <div class="cart-store-credit">
+    <div class="cart-store-credit__header">
+      <h3 class="cart-store-credit__title">Your Store Credits</h3>
+      <div class="store-credit-display">Available Store Credits: Loading...</div>
+    </div>
+    
+    <div class="cart-store-credit__info">
+      <p>You can use up to 20% of your cart total in store credits during checkout.</p>
+      <details>
+        <summary>Learn more about store credits</summary>
+        <div class="cart-store-credit__details">
+          <p>Store credits are earned based on your monthly spending:</p>
+          <ul>
+            <li>$10,000+ per month: Earn 2% back in store credits</li>
+            <li>$20,000+ per month: Earn 3.5% back in store credits</li>
+            <li>$50,000+ per month: Earn 4% back in store credits</li>
+          </ul>
+          <p><strong>Important rules:</strong></p>
+          <ul>
+            <li>Credits can only be used up to 20% of your purchase total</li>
+            <li>Credits earned in the current month can only be used in future months</li>
+            <li>Your credits never expire</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <style>
+    .cart-store-credit {
+      margin: 20px 0;
+      padding: 15px;
+      border: 1px solid #e8e8e8;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    
+    .cart-store-credit__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .cart-store-credit__title {
+      margin: 0;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    
+    .store-credit-display {
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .cart-store-credit__info {
+      font-size: 14px;
+    }
+    
+    .cart-store-credit__info summary {
+      cursor: pointer;
+      color: #555;
+      margin-top: 10px;
+      display: inline-block;
+    }
+    
+    .cart-store-credit__details {
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+    
+    .cart-store-credit__details ul {
+      margin-left: 20px;
+      margin-bottom: 15px;
+    }
+  </style>
+{% endif %}
