@@ -1,0 +1,15 @@
+name = "Store Credit Discount"
+type = "function"
+api_version = "2023-10"
+
+[build]
+command = "npm run build"
+path = "dist/function.wasm"
+
+[ui.paths]
+create = "/"
+details = "/"
+
+[input.variables]
+namespace = "store-credit"
+key = "config"

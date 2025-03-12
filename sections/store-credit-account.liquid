@@ -1,0 +1,150 @@
+{% comment %}
+  Store Credit Account Section
+  
+  This section displays the customer's store credits and transaction history on their account page.
+  
+  Usage:
+  Include this section in the customer account page template.
+{% endcomment %}
+
+<div class="store-credit-account">
+  <div class="store-credit-account__header">
+    <h2 class="store-credit-account__title">Your Store Credits</h2>
+    <div class="store-credit-display">Available Store Credits: Loading...</div>
+  </div>
+  
+  <div class="store-credit-account__info">
+    <p>Store credits are earned based on your monthly spending:</p>
+    <ul>
+      <li>$10,000+ per month: Earn 2% back in store credits</li>
+      <li>$20,000+ per month: Earn 3.5% back in store credits</li>
+      <li>$50,000+ per month: Earn 4% back in store credits</li>
+    </ul>
+    
+    <div class="store-credit-account__rules">
+      <h3>Store Credit Rules</h3>
+      <ul>
+        <li>Credits can only be used up to 20% of your purchase total</li>
+        <li>Credits earned in the current month can only be used in future months</li>
+        <li>Your credits never expire</li>
+      </ul>
+    </div>
+  </div>
+  
+  <div class="store-credit-account__history">
+    <h3>Credit History</h3>
+    <div class="store-credit-history-table">
+      <div class="store-credit-history-loading">Loading your credit history...</div>
+      <table class="store-credit-history-data" style="display: none;">
+        <thead>
+          <tr>
+            <th>Month</th>
+            <th>Revenue</th>
+            <th>Credits Earned</th>
+            <th>Credits Available</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- This will be populated by JavaScript -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<style>
+  .store-credit-account {
+    margin: 30px 0;
+  }
+  
+  .store-credit-account__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e8e8e8;
+  }
+  
+  .store-credit-account__title {
+    margin: 0;
+    font-size: 24px;
+  }
+  
+  .store-credit-display {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .store-credit-account__info {
+    margin-bottom: 30px;
+  }
+  
+  .store-credit-account__info ul,
+  .store-credit-account__rules ul {
+    margin-left: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .store-credit-account__rules {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 5px;
+    margin-top: 20px;
+  }
+  
+  .store-credit-account__rules h3 {
+    margin-top: 0;
+  }
+  
+  .store-credit-history-table {
+    margin-top: 15px;
+    overflow-x: auto;
+  }
+  
+  .store-credit-history-data {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .store-credit-history-data th,
+  .store-credit-history-data td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #e8e8e8;
+  }
+  
+  .store-credit-history-data th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+  }
+  
+  .store-credit-history-loading {
+    padding: 20px 0;
+    text-align: center;
+    color: #777;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // This will be initialized by the StoreCreditManager class
+    if (window.storeCreditManager) {
+      window.storeCreditManager.initAccountPage();
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Store Credits",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Store Credits",
+      "category": "Customer"
+    }
+  ]
+}
+{% endschema %}

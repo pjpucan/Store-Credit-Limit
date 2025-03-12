@@ -9,13 +9,17 @@ A Shopify Theme implementation for Store Credit functionality with specific rule
 - **Next Month Rule**: Credits earned in the current month can only be used in following months
 - **No Expiry**: Store credits never expire
 - **Checkout Integration**: Credits are applied as discounts during checkout
+- **Account Integration**: Customers can view their credit history in their account
+- **Cart Display**: Available credits are shown on the cart page
 
 ## Implementation Components
 
 1. **Metafields**: Store customer credit balances and transaction history
-2. **Shopify Flow**: Automate credit calculations and updates
+2. **Webhook Handler**: Process orders and calculate earned credits
 3. **Discount Function**: Apply credits at checkout with usage rules
 4. **StoreCreditManager**: JavaScript class for frontend credit management
+5. **Liquid Templates**: Display credits and history on storefront
+6. **Admin Interface**: Manage customer credits from Shopify Admin
 
 ## Credit Earning Tiers
 
@@ -74,28 +78,81 @@ npm run start
 In Shopify Admin:
 1. Go to Settings > Custom data
 2. Add the following metafields for customers:
-   - Namespace: `customer`, Key: `store_credits`, Type: `decimal_number`
-   - Namespace: `customer`, Key: `credit_history`, Type: `json`
+   - Namespace: `custom`, Key: `rebate`, Type: `json_string`
+   - Namespace: `custom`, Key: `revenu_track`, Type: `json_string`
+   - Namespace: `custom`, Key: `revenu`, Type: `number_decimal`
 
-### 2. Shopify Flow Configuration
+### 2. Function Deployment
 
-1. Go to Shopify Admin > Apps > Shopify Flow
-2. Create two workflows:
-   - **Monthly Credit Calculation**: Runs on the last day of each month
-   - **Order Credit Calculation**: Runs when an order is paid
+Use the included deployment script to deploy the discount function and webhook handler:
 
-### 3. Discount Function Deployment
+```bash
+chmod +x deploy.sh
+./deploy.sh
+```
 
-1. Use Shopify CLI to deploy the discount function:
-   ```bash
-   cd extensions/store-credit-discount
-   shopify app deploy
+Alternatively, deploy each function manually:
+
+```bash
+# Deploy discount function
+cd extensions/store-credit-function
+npm install
+shopify app function build
+shopify app function deploy
+
+# Deploy webhook handler
+cd ../store-credit-webhook
+npm install
+shopify app function build
+shopify app function deploy
+```
+
+### 3. Theme Integration
+
+1. Add the store credit display to your cart template:
+   ```liquid
+   {% render 'cart-store-credit' %}
    ```
 
-2. In Shopify Admin, activate the discount function under Discounts > Functions
+2. Add the store credit account section to your customer account template:
+   ```liquid
+   {% section 'store-credit-account' %}
+   ```
+
+3. Include the StoreCreditManager JavaScript in your theme:
+   ```html
+   <script src="{{ 'customjs.js' | asset_url }}" defer></script>
+   ```
+
+### 4. Admin Configuration
+
+1. In Shopify Admin, activate the discount function under Apps > Functions
+2. Configure the webhook under Settings > Notifications > Webhooks
 
 ## File Structure
 
-- `src/js/store-credit.js`: Frontend StoreCreditManager class
-- `extensions/store-credit-discount/`: Shopify Discount Function
-- `extensions/store-credit-flow/`: Shopify Flow configuration and scripts
+- `src/js/customjs.js`: Frontend StoreCreditManager class
+- `extensions/store-credit-function/`: Shopify Discount Function
+- `extensions/store-credit-webhook/`: Webhook handler for order processing
+- `snippets/store-credit-display.liquid`: General store credit display
+- `snippets/cart-store-credit.liquid`: Cart-specific credit display
+- `sections/store-credit-account.liquid`: Customer account credit history
+
+## Testing
+
+To test the store credit functionality:
+
+1. Create a test customer account
+2. Make purchases to accumulate credits (you may need to manually add credits for testing)
+3. Verify that credits appear in the customer account
+4. Test the checkout process to ensure credits are applied correctly
+5. Verify that the 20% usage limit is enforced
+
+## Troubleshooting
+
+If credits are not displaying or applying correctly:
+
+1. Check browser console for JavaScript errors
+2. Verify that metafields are correctly configured
+3. Ensure the discount function is properly deployed and activated
+4. Check webhook logs for any processing errors
