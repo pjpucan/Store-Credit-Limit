@@ -1,18 +1,14 @@
 {
   "name": "store-credit-webhook",
   "version": "1.0.0",
-  "description": "Shopify webhook for processing orders and updating store credits",
+  "description": "Shopify webhook to update customer store credits after order completion",
   "main": "dist/index.js",
   "scripts": {
-    "build": "shopify app function build",
-    "deploy": "shopify app function deploy",
+    "build": "npm run build:js",
+    "build:js": "mkdir -p dist && cp src/index.js dist/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@shopify/shopify-api": "^7.5.0"
-  },
-  "devDependencies": {
-    "@shopify/app": "^3.46.0",
-    "@shopify/cli": "^3.46.0"
+    "node-fetch": "^2.6.7"
   }
 }

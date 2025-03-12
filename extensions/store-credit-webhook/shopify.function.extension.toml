@@ -6,6 +6,8 @@ api_version = "2023-10"
 command = "npm run build"
 path = "dist/index.js"
 
-[[webhooks]]
-topic = "orders/create"
-uri = "/webhooks/orders/create"
+[webhook]
+uri = "/api/webhooks"
+subscriptions = [
+  "orders/paid"
+]

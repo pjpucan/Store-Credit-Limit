@@ -1,197 +1,75 @@
+// @ts-check
+
 /**
- * Store Credit Discount Function
+ * Store Credit Function
  * 
- * This function applies store credits as a discount during checkout with the following rules:
- * 1. Maximum 20% of the order total can be used as store credits
- * 2. Credits from the current month cannot be used (only previous months)
- * 3. Credits never expire
+ * Rules:
+ * 1. Customers can only use credits up to 20% of their purchase
+ * 2. Credits obtained in the current month can only be used in the following months
+ * 3. Points never expire
+ * 4. Discount applies on checkout
  */
 
-// Input schema for the function
-const INPUT_SCHEMA = {
-  "type": "object",
-  "properties": {
-    "cart": {
-      "type": "object",
-      "properties": {
-        "lines": {
-          "type": "array",
-          "items": {
-            "type": "object"
-          }
-        },
-        "cost": {
-          "type": "object",
-          "properties": {
-            "totalAmount": {
-              "type": "object",
-              "properties": {
-                "amount": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "buyerIdentity": {
-          "type": "object",
-          "properties": {
-            "customer": {
-              "type": "object",
-              "properties": {
-                "id": {
-                  "type": "string"
-                },
-                "metafields": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "namespace": {
-                        "type": "string"
-                      },
-                      "key": {
-                        "type": "string"
-                      },
-                      "value": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "attributes": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "key": {
-                "type": "string"
-              },
-              "value": {
-                "type": "string"
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-};
+/**
+ * @typedef {import("../generated/api").InputQuery} InputQuery
+ * @typedef {import("../generated/api").FunctionResult} FunctionResult
+ * @typedef {import("../generated/api").Target} Target
+ */
 
-// Output schema for the function
-const OUTPUT_SCHEMA = {
-  "type": "object",
-  "properties": {
-    "discountApplicationStrategy": {
-      "type": "string",
-      "enum": ["FIRST", "MAXIMUM", "ALL"]
-    },
-    "discounts": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "value": {
-            "type": "object",
-            "properties": {
-              "fixedAmount": {
-                "type": "object",
-                "properties": {
-                  "amount": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          },
-          "targets": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "orderSubtotal": {
-                  "type": "object",
-                  "properties": {
-                    "excludedVariantIds": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "message": {
-            "type": "string"
-          }
-        }
-      }
-    }
-  }
+/**
+ * @type {FunctionResult}
+ */
+const NO_DISCOUNT = {
+  discountApplicationStrategy: "FIRST",
+  discounts: [],
 };
 
 /**
- * @param {object} input - The input object containing cart and customer data
- * @returns {object} - The discount to be applied
+ * @param {InputQuery} input
+ * @returns {FunctionResult}
  */
 export function run(input) {
-  // Default response with no discounts
-  const noDiscountResponse = {
-    discountApplicationStrategy: "FIRST",
-    discounts: []
-  };
+  // Get cart and customer data
+  const cart = input.cart;
+  const customer = cart.buyerIdentity?.customer;
+
+  // If no customer or cart is empty, no discount to apply
+  if (!customer || !cart.lines || cart.lines.length === 0) {
+    return NO_DISCOUNT;
+  }
+
+  // Get cart total
+  const cartTotal = parseFloat(cart.cost.totalAmount.amount);
+  const currencyCode = cart.cost.totalAmount.currencyCode;
+
+  // Calculate maximum allowed credit (20% of cart total)
+  const maxAllowedCredit = cartTotal * 0.2;
+
+  // Get customer metafields
+  const metafields = customer.metafields?.edges || [];
+  
+  // Find rebate metafield
+  const rebateMetafield = metafields.find(
+    edge => edge.node.key === "rebate"
+  );
+
+  // If no rebate metafield, no discount to apply
+  if (!rebateMetafield) {
+    return NO_DISCOUNT;
+  }
 
   try {
-    // Get the cart and customer information
-    const cart = input.cart;
-    const customer = cart.buyerIdentity?.customer;
+    // Parse rebate data
+    const rebateData = JSON.parse(rebateMetafield.node.value);
     
-    // If no customer is logged in, return no discounts
-    if (!customer) {
-      return noDiscountResponse;
-    }
-
-    // Check if there are store credits to apply from cart attributes
-    const storeCreditsAttribute = cart.attributes?.find(
-      attr => attr.key === "store_credits_to_apply"
-    );
-
-    // If no store credits attribute found, return no discounts
-    if (!storeCreditsAttribute || !storeCreditsAttribute.value) {
-      return noDiscountResponse;
-    }
-
-    // Parse the store credits to apply
-    const storeCreditsToApply = parseFloat(storeCreditsAttribute.value);
-    if (isNaN(storeCreditsToApply) || storeCreditsToApply <= 0) {
-      return noDiscountResponse;
-    }
-
-    // Get customer metafields to verify available credits
-    const rebateMetafield = customer.metafields?.find(
-      metafield => metafield.namespace === "custom" && metafield.key === "rebate"
-    );
-
-    if (!rebateMetafield || !rebateMetafield.value) {
-      return noDiscountResponse;
-    }
-
-    // Parse the rebate data
-    const rebateData = JSON.parse(rebateMetafield.value);
-    
-    // Calculate available credits (excluding current month)
+    // Calculate available credits (only from previous months)
     const currentDate = new Date();
     const currentMonth = currentDate.getMonth();
     const currentYear = currentDate.getFullYear();
     
     let availableCredits = 0;
     
+    // Sum up credits from previous months only
     Object.entries(rebateData).forEach(([yearMonth, amount]) => {
       const [year, month] = yearMonth.split('-').map(Number);
       
@@ -200,37 +78,44 @@ export function run(input) {
         availableCredits += parseFloat(amount);
       }
     });
-
-    // Calculate maximum credits that can be used (20% of cart total)
-    const cartTotal = parseFloat(cart.cost.totalAmount.amount);
-    const maxCreditsForOrder = cartTotal * 0.2;
     
-    // Determine credits to use (minimum of available credits, requested credits, and max allowed)
-    const creditsToUse = Math.min(availableCredits, storeCreditsToApply, maxCreditsForOrder);
-    
-    if (creditsToUse <= 0) {
-      return noDiscountResponse;
+    // If no available credits, no discount to apply
+    if (availableCredits <= 0) {
+      return NO_DISCOUNT;
     }
-
-    // Apply the discount to the cart
+    
+    // Determine credits to use (minimum of available credits and max allowed)
+    const creditsToUse = Math.min(availableCredits, maxAllowedCredit);
+    
+    // If credits to use is too small (less than 0.01), no discount to apply
+    if (creditsToUse < 0.01) {
+      return NO_DISCOUNT;
+    }
+    
+    // Create discount
     return {
       discountApplicationStrategy: "FIRST",
-      discounts: [{
-        value: {
-          fixedAmount: {
-            amount: creditsToUse.toString()
-          }
-        },
-        targets: [{
-          orderSubtotal: {
-            excludedVariantIds: []
-          }
-        }],
-        message: `Applied ${creditsToUse.toFixed(2)} store credits`
-      }]
+      discounts: [
+        {
+          value: {
+            fixedAmount: {
+              amount: creditsToUse.toString(),
+              currencyCode: currencyCode,
+            }
+          },
+          targets: [
+            {
+              orderSubtotal: {
+                excludedVariantIds: []
+              }
+            }
+          ],
+          message: `Store credit applied: ${currencyCode} ${creditsToUse.toFixed(2)}`
+        }
+      ]
     };
   } catch (error) {
-    console.error('Error applying store credits:', error);
-    return noDiscountResponse;
+    console.error("Error processing store credits:", error);
+    return NO_DISCOUNT;
   }
 }

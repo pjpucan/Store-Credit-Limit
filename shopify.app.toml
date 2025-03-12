@@ -1,19 +1,12 @@
 name = "Store Credit Limit"
-client_id = "YOUR_CLIENT_ID" # This will be filled in by Shopify CLI
-scopes = "write_discounts,read_discounts"
-application_url = "YOUR_APP_URL" # This will be filled in by Shopify CLI
+scopes = "write_customers,read_customers,write_orders,read_orders,write_discounts,read_discounts"
+api_version = "2023-10"
 
 [build]
 automatically_update_urls_on_dev = true
-dev_store_url = "YOUR_DEVELOPMENT_STORE.myshopify.com" # Replace with your dev store
-
-[auth]
-redirect_urls = [
-  "YOUR_APP_URL/auth/callback" # This will be filled in by Shopify CLI
-]
 
 [webhooks]
 api_version = "2023-10"
 
-[pos]
-embedded = false
+[app_preferences]
+url = "/"
